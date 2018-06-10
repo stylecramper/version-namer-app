@@ -1,0 +1,7 @@
+.signin-form {
+    background-color: white;
+    border: 1px dotted gray;
+    padding: 20px 40px;
+    position: absolute;
+    right: 0;
+}
