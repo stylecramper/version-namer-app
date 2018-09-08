@@ -1,28 +1,78 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
+import { Router } from '@angular/router';
+import { Http } from '@angular/http';
+import { Observable } from 'rxjs/Rx';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
+interface UserType { name: string, token: string };
 
 @Injectable()
 export class AuthService {
+  user: UserType;
+  @Output() getLoggedInStatus: EventEmitter<boolean> = new EventEmitter();
 
-  constructor() { }
+  constructor(private http: Http, private router: Router) {
+    this.user = { name: '', token: '' };
+  }
 
-  login(email: string, password: string): boolean {
-    if (email === 'email' && password === 'password') {
-      localStorage.setItem('username', 'Matt');
-      return true;
-    }
-    return false;
+  register(userData: object) {
+    const registerResult: Observable<any> = this.http.post('api/users', userData)
+      .map(response => response.json())
+      .catch((e) => {
+        return Observable.throw(new Error(`${ e.status } ${ e.statusText }`));
+      });
+    return registerResult;
+  }
+
+  login(email: string, password: string) {
+    const loginResult: Observable<any> = this.http.post('api/login', {email: email, password: password})
+      .map(response => response.json())
+      .catch((e) => {
+        return Observable.throw(new Error(`${ e.status } ${ e.statusText }`));
+      });
+    return loginResult;
   }
 
   logout(): void {
-    localStorage.removeItem('username');
+    const logoutResult: Observable<any> = this.http.post('api/logout', { token: this.user.token })
+      .map(response => response.json())
+      .catch((e) => {
+        return Observable.throw(new Error(`${ e.status } ${ e.statusText }`));
+      });
+    logoutResult
+      .subscribe((res) => {console.log('##### logging out successful');
+        this.user.token = '';
+        localStorage.removeItem('username');
+        localStorage.removeItem('usertoken');
+        this.router.navigate(['/home', { outlets: { signin: null }}]);
+      });
+
   }
 
-  getUser(): string {
+  getUser(): UserType {
+    return {name: localStorage.getItem('username'), token: localStorage.getItem('usertoken')};
+  }
+
+  getUsername(): string {
     return localStorage.getItem('username');
   }
 
+  setUser(name: string, token: string): void {
+    this.user.name = name;
+    this.user.token = token;
+    localStorage.setItem('username', name);
+    localStorage.setItem('usertoken', token);
+    if (this.user.token) {
+      this.getLoggedInStatus.emit(true);
+    }
+  }
+
   isLoggedIn(): boolean {
-    return this.getUser() !== null;
+    return localStorage.getItem('usertoken') !== null;
   }
 
 }
+
+export const AUTH_PROVIDERS: Array<any> = [
+  { provide: AuthService, useClass: AuthService }
+];
