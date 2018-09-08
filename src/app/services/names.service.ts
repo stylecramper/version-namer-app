@@ -6,14 +6,15 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/forkJoin';
 
-import { Animal, Adjective } from '../models/names.models';
+import { Animal, Adjective, NamesType } from '../models/names.models';
 
 @Injectable()
 export class NamesService {
+  private names: NamesType;
 
   constructor(private http: Http) { }
 
-  getNames() {
+  fetchNames() {
 
     const animals: Observable<Animal[]> = this.http.get('/api/animals')
       .map(response => response.json())
@@ -46,6 +47,14 @@ export class NamesService {
       });
 
     return Observable.forkJoin(animals, adjectives);
+  }
+
+  setNames(names: NamesType): void {
+    this.names = names;
+  }
+
+  getNames(): NamesType {
+    return this.names;
   }
 
 }
