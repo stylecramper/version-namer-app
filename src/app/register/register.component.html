@@ -1,3 +1,62 @@
-<p>
-  register works!
-</p>
+<section>
+  <div class="container col-md-6 register-form" *ngIf="registrationState==='prereg'">
+    <h2>Sign up for a free account!</h2>
+    <h3>Once you're signed up, you can create as many projects as you like, and generate any number of version names for each project.</h3>
+    <h6 class="required-note">* All fields are required.</h6>
+    <form class="needs-validation" [formGroup]="userForm" (ngSubmit)="register(userForm)">
+      <div class="form-group">
+        <label class="control-label" for="first_name">First name: <br />
+          <input
+            [formControl]="userForm.controls['firstname']"
+            class="form-control" type="text" #firstname id="first_name" />
+        </label>
+      </div>
+      <div class="form-group">
+          <label class="control-label" for="last_name">Last name: <br />
+            <input
+              [formControl]="userForm.controls['lastname']"
+              class="form-control" type="text" #lastname id="last_name" />
+          </label>
+      </div>
+      <div class="form-group">
+          <label class="control-label" for="email">Email: <br />
+            <input
+            [formControl]="userForm.controls['email']"
+              class="form-control" type="text" #email id="email" />
+          </label>
+      </div>
+      <div class="form-group password-container">
+          <label class="control-label" for="password">Password: <br />
+            <input
+              [formControl]="userForm.controls['password']"
+              class="form-control" type="password" #password id="password" />
+              <div class="strength-check" [ngClass]="{'strong':isStrong(),'medium':isMedium(), 'weak':isWeak()}">{{passwordStrength()}}</div>
+              <span class="input-note">Passwords should have at least 8 characters, and include at least one capital letter, one lowercase letter, one number, and one punctuation character.</span>
+          </label>
+      </div>
+      <div class="form-group">
+          <label class="control-label" for="confirm-password">Confirm Password: <br />
+            <input
+              [formControl]="userForm.controls['confirmPassword']"
+              [ngClass]="{'is-invalid':passwordMatchError()}"
+              class="form-control" type="password" #confirmPassword id="confirm-password" />
+          </label>
+      </div>
+      <button
+        [disabled]="userForm.invalid"
+        type="submit"
+        class="btn btn-primary">Register Me</button>
+    </form>
+    <div class="alert alert-danger" role="alert" *ngIf="message">
+      {{ message }}
+    </div>
+  </div>
+  <div class="success-container" *ngIf="registrationState===successValue">
+    <div class="mask"></div>
+    <div class="success-modal">
+      <h6>Success!</h6>
+      <p>Now you can sign in with your email address and password.</p>
+      <button type="button" class="btn btn-primary btn-lg btn-block" (click)="goToSignIn()">Sign In</button>
+    </div>
+  </div>
+</section>
