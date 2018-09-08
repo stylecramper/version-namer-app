@@ -1,1 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
+
+body {
+    padding-bottom: 40px;
+}
+
+.required-note {
+    font-style: italic;
+}
+
+.input-note {
+    color: gray;
+    display: inline-block;
+    font-size: 0.75em;
+    line-height: 1.25;
+}
