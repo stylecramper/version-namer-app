@@ -1,19 +1,32 @@
-<div class="container col-md-3 signin-form">
-  <form *ngIf="!authService.getUser()">
+<div class="container col-md-3 signin-form-panel">
+  <form
+  class="signin-form"
+  [formGroup]="signinForm"
+  *ngIf="!authService.isLoggedIn()"
+  (ngSubmit)="login(signinForm)">
+    <button type="button" class="close" (click)="close()">
+      <span>x</span>
+    </button>
     <div class="form-group">
       <label for="email">Email:</label>
-      <input type="email" name="email" #email class="form-control">
+      <input
+      [formControl]="signinForm.controls['email']"
+      type="email"
+      name="email"
+      #email
+      class="form-control">
     </div>
     <div class="form-group">
       <label for="password">Password:</label>
-      <input type="password" name="password" #password class="form-control">
+      <input
+      [formControl]="signinForm.controls['password']"
+      type="password"
+      name="password"
+      #password
+      class="form-control">
     </div>
-    <button (click)="login(email.value, password.value)" class="btn btn-primary">Sign In</button>
+    <button type="submit" class="btn btn-primary">Sign In</button>
   </form>
-  <div class="well" *ngIf="authService.getUser()">
-    Logged in as <b>{{ authService.getUser() }}</b>
-    <a href (click)="logout()">Log out</a>
-  </div>
   <div class="alert alert-danger" role="alert" *ngIf="message">
     {{ message }}
   </div>

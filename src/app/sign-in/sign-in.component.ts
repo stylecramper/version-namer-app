@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { AuthService } from './../services/auth.service';
 
@@ -8,23 +10,37 @@ import { AuthService } from './../services/auth.service';
   styleUrls: ['./sign-in.component.css']
 })
 export class SignInComponent implements OnInit {
+  signinForm: FormGroup;
   message: string;
 
-  constructor(public authService: AuthService) {
+  constructor(private fb: FormBuilder, public authService: AuthService, private router: Router) {
     this.message = '';
+    this.createForm();
   }
 
   ngOnInit() {
   }
 
-  login(email: string, password: string) {
+  createForm() {
+    this.signinForm = this.fb.group({
+      email: ['', Validators.required],
+      password: ['', Validators.required]
+    });
+  }
+
+  close() {
+    this.router.navigate(['./', { outlets: { signin: null }}]);
+  }
+
+  login(form) {
     this.message = '';
-    if (!this.authService.login(email, password)) {
-      this.message = 'Incorrect credentials.';
-      setTimeout(function() {
-        this.message = '';
-      }.bind(this), 2500);
-    }
+    this.authService.login(form.controls.email.value, form.controls.password.value)
+      .subscribe((res) => {
+        if (res.hasOwnProperty('access_token')) {
+          this.authService.setUser(res.name, res.access_token);
+          this.close();
+        }
+      });
   }
 
   logout(): boolean {
