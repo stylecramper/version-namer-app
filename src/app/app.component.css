@@ -1,3 +1,21 @@
 .page-container {
     position: relative;
 }
+.well.logged-in {
+    position: absolute;
+    right: 20px;
+    top: 8px;
+}
+
+.link {
+    color: #007bff;
+    cursor: pointer;
+}
+
+.link:hover {
+    color: #0056b3;
+}
+
+.logout-link {
+    padding-left: 10px;
+}

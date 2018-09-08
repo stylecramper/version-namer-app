@@ -3,6 +3,10 @@
       <h1>{{ title }}</h1>
       <utility-navigation></utility-navigation>
       <navigation></navigation>
+      <div class="well logged-in" *ngIf="loggedIn()">
+        Logged in as <b>{{ authService.getUsername() }}</b>
+        <a href class="link logout-link" (click)="logout()">Log out</a>
+      </div>
       <router-outlet name="signin"></router-outlet>
   </header>
   <main>
