@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { NavigationComponent } from './../navigation/navigation.component';
 import { NamesService } from '../services/names.service';
-import { Animal, Adjective } from '../models/names.models';
+import { NamesType } from '../models/names.models';
 
 @Component({
   selector: 'app-home',
@@ -11,14 +10,15 @@ import { Animal, Adjective } from '../models/names.models';
 })
 export class HomeComponent implements OnInit {
 
-  names: Array<Animal[] | Adjective[]> = [];
+  names: NamesType;
 
   constructor(private namesService: NamesService) { }
 
   ngOnInit() {
-    this.namesService.getNames()
-      .subscribe(names => {
-        this.names = names;
+    this.namesService.fetchNames()
+      .subscribe(namesArray => {
+        this.names = { animals: namesArray[0], adjectives: namesArray[1] };
+        this.namesService.setNames(this.names);
       });
   }
 

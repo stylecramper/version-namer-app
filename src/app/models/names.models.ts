@@ -49,3 +49,8 @@ export class Adjective {
         this._adjective = theAdjective;
     }
 }
+
+export interface NamesType {
+    animals: Animal[],
+    adjectives: Adjective[]
+  } 
