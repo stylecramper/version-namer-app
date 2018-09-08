@@ -1,3 +1,22 @@
-<p>
-  projects works!
-</p>
+<div *ngIf="isLoggedIn">
+  <section class="projects empty" *ngIf="!hasProjects()">
+    <h3>You don't have any projects yet.</h3>
+  </section>
+
+  <section class="projects" *ngIf="hasProjects()">
+    <h3>My Projects</h3>
+    <ul class="projects-list">
+      <li *ngFor="let project of projects">
+        <span class="project-name">{{ project.name }}</span>
+        <div>
+          <button class="btn btn-secondary" (click)="editVersionNames(project)">Edit version names</button>
+          <button class="btn btn-danger">Delete</button>
+        </div>
+      </li>
+    </ul>
+  </section>
+  <button (click)="createProject()" class="btn btn-primary">Create a new project</button>
+</div>
+<div *ngIf="!isLoggedIn">
+  You must be signed in to view your projects.
+</div>

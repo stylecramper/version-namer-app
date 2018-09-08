@@ -1,0 +1,12 @@
+.projects-list {
+    width: 700px;
+}
+
+.projects-list li {
+    background-color: #eee;
+    display: flex;
+    justify-content: space-between;
+    line-height: 2.2em;
+    margin-top: 1em;
+    padding: 0.5em;
+}
