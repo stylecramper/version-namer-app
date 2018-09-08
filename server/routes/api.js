@@ -1,59 +1,69 @@
 const express = require('express');
-var bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
+const expressjwt = require('express-jwt');
 const router = express.Router();
-var mongodb = require('mongodb');
-var ObjectID = mongodb.ObjectID;
+const bcrypt = require('bcrypt');
+const mongodb = require('mongodb');
 
-var ANIMALS_COLLECTION = 'animals';
-var ADJECTIVES_COLLECTION = 'adjectives';
-var PROJECTS_COLLECTION = 'projects';
-var USERS_COLLECTION = 'users';
+const ANIMALS_COLLECTION = 'animals';
+const ADJECTIVES_COLLECTION = 'adjectives';
+const PROJECTS_COLLECTION = 'projects';
+const USERS_COLLECTION = 'users';
+const SECRET_KEY = '998cf65a-1f0f-4325-81ea-315b08aec537';
 
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var ObjectId = Schema.ObjectId;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
 
-var app = express();
+const app = express();
 app.use(bodyParser.json());
 
-var db;
+const jwtCheck = expressjwt({
+    secret: SECRET_KEY
+});
 
-var AnimalSchema = new Schema({
+let db;
+
+const AnimalSchema = new Schema({
     animal: String
 });
-var Animal = mongoose.model('Animal', AnimalSchema);
+const Animal = mongoose.model('Animal', AnimalSchema);
 
-var AdjectiveSchema = new Schema({
+const AdjectiveSchema = new Schema({
     adjective: String
 });
-var Adjective = mongoose.model('Adjective', AdjectiveSchema);
+const Adjective = mongoose.model('Adjective', AdjectiveSchema);
 
-var ProjectVersionNameSchema = new Schema({
+const ProjectVersionNameSchema = new Schema({
     adjective: String,
     animal: String,
     created_at: Date,
     updated_at: Date
 });
-var ProjectVersionName = mongoose.model('ProjectVersionName', ProjectVersionNameSchema);
+const ProjectVersionName = mongoose.model('ProjectVersionName', ProjectVersionNameSchema);
 
-var ProjectSchema = new Schema({
+const ProjectSchema = new Schema({
     project_name: String,
-    project_version_names: [ProjectVersionNameSchema],
+    project_version_names: [ObjectId],
     current_project_version_name: ObjectId,
     created_at: Date,
     updated_at: Date
 });
-var Project = mongoose.model('Project', ProjectSchema);
+const Project = mongoose.model('Project', ProjectSchema);
 
-var UserSchema = new Schema({
-    name: String,
-    username: { type: String, required: true, unique: true },
+const UserSchema = new Schema({
+    firstname: String,
+    lastname: String,
+    email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    projects: [ProjectSchema],
+    salt: { type: String, required: true },
+    token: String,
+    projects: [ObjectId],
     created_at: Date,
     updated_at: Date
 });
-var User = mongoose.model('User', UserSchema);
+const User = mongoose.model('User', UserSchema);
 
 [ProjectSchema, ProjectVersionNameSchema, UserSchema].forEach(function setPreSaveBehaviour(model) {
     model.pre('save', function(next) {
@@ -79,6 +89,107 @@ mongodb.MongoClient.connect('mongodb://localhost:27017/VERSION_NAMES', function(
 
 });
 
+router.get('/projects', jwtCheck, (req, res) => {
+    // TODO: deal with user not being found?
+    User.findById(req.user.id, 'projects').exec((err, projects) => {
+        Project.find({
+            '_id': { $in: projects.projects }
+        }, (err, userProjects) => {
+            let projectsList;
+
+            if (err) {
+                console.log('Projects fetching error: ', err);
+                res.status(200).send(JSON.stringify({ code: 'error' }));
+                return;
+            }
+            projectsList = userProjects.map((project) => {
+                return {
+                    id: project._id,
+                    name: project.project_name,
+                    current_version_name: project.current_project_version_name
+                };
+            });
+            res
+            .status(200)
+            .send(JSON.stringify({ code: 'success', projects: projectsList }));
+        });
+    });
+});
+
+router.post('/projects', jwtCheck, (req, res) => {
+    const project = {
+        project_name: req.body.project.projectname,
+        project_version_names: [],
+        current_project_version_name: null,
+        created_at: new Date(),
+        updated_at: new Date()
+    };
+    Project.create(project)
+        .then((proj) => {
+            User.findById(req.user.id).then((userfound) => {
+                userfound.projects = userfound.projects.concat([proj._id]);
+                userfound.save((err) => {console.log('### user save error', err);
+                    if (err) {
+                        res.status(200).send(JSON.stringify({ code: 'error' }));
+                    } else {
+                        res.status(200).send(JSON.stringify({ code: 'success', project: { id: proj._id, name: proj.project_name, current_version_name: null } }));
+                    }
+                });
+            });
+        });
+});
+
+router.get('/version-names/:id', jwtCheck, (req, res) => {
+    Project.findById(req.params.id, 'project_version_names').exec((err, docs) => {
+        if (err) {console.log('#### err', err.name + ', ' + err.kind);
+            if (err.name === 'CastError' && err.kind === 'ObjectId') {
+                res
+                .status(200)
+                .send(JSON.stringify({ code: 'project_id_error' }));
+            } else {
+                res
+                .status(200)
+                .send(JSON.stringify({ code: 'generic_error' }));
+            }
+        } else {
+            ProjectVersionName.find({
+                '_id': { $in: docs.project_version_names }
+            }, (err, docs) => {
+                if (err) {
+                    res.status(200).send(JSON.stringify({ code: 'error' }));
+                } else {
+                    res
+                    .status(200)
+                    .send(JSON.stringify({ code: 'success', versionNames: docs }));
+                }
+            });
+        }
+    });
+});
+
+router.post('/version-names/:id', jwtCheck, (req, res) => {
+    const projectVersionName = {
+        adjective: req.body.versionName.adjective._adjective,
+        animal: req.body.versionName.animal._animal,
+        created_at: new Date(),
+        updated_at: new Date()
+    };
+    ProjectVersionName.create(projectVersionName)
+        .then((pvn) => {console.log('new project version name', pvn);
+            Project.findById(req.params.id).then((projectfound) => {
+                projectfound.project_version_names = projectfound.project_version_names.concat([pvn._id]);
+                projectfound.current_project_version_name = pvn._id;
+                projectfound.save((err) => {console.log('### project save error', err);
+                    if (err) {
+                        res.status(200).send(JSON.stringify({ code: 'error' }));
+                    } else {
+                        res.status(200).send(JSON.stringify({ code: 'success', versionName: { id: pvn._id, adjective: pvn.adjective, animal: pvn.animal } }));
+                    }
+                })
+            });
+        });
+});
+
 router.get('/animals', (req, res) => {
     var animals;
 
@@ -97,6 +208,72 @@ router.get('/adjectives', (req, res) => {
         res.send(JSON.stringify(adjectives));
     });
     
+});
+
+router.post('/users', (req, res) => {
+    const newSalt = bcrypt.genSaltSync(5);
+    const hash = bcrypt.hashSync(req.body.password, newSalt);
+    const user = new User({
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        email: req.body.email,
+        password: hash,
+        salt: newSalt,
+        token: null,
+        projects: [],
+        created_at: new Date(),
+        updated_at: new Date()
+    });
+    user.save((err) => {console.log('### err', err);
+        if (err) {
+            res.send(JSON.stringify({ code: 'error' }));
+        } else {
+            res.send(JSON.stringify({ code: 'success', user: user._id }));
+        }
+    });
+});
+
+router.post('/login', (req, res) => {
+    User.findOne({ email: req.body.email }, '_id firstname email password salt', (err, user) => {
+        if (err) {
+            res.send(JSON.stringify({ code: 'generic_error' }));
+        } else {
+            if (user === null) {
+                res.send(JSON.stringify({ code: 'unknown_email' }));
+            } else {
+                if (bcrypt.hashSync(req.body.password, user.salt) === user.password) {
+                    // user is valid, log them in
+                    const token = jwt.sign({
+                        id: user._id,
+                        username: user.username
+                    }, SECRET_KEY, {expiresIn: '3 hours'});
+                    // save token for user
+                    res
+                        .status(200)
+                        .send({ name: user.firstname, access_token: token });
+                } else {
+                    res.send(JSON.stringify({ code: 'incorrect_password' }));
+                }
+            }
+        }
+    });
+});
+
+router.post('/logout', (req, res) => {
+    User.findOne({ token: req.body.token }, (err, user) => {
+        if (err) {
+            res.send(JSON.stringify({ code: 'generic_error' }));
+        } else {
+            if (user === null) {
+                res.send(JSON.stringify({ code: 'generic_error' }));
+            } else {
+                user.update({ token: null }).exec();
+                res
+                    .status(200)
+                    .send(JSON.stringify({ code: 'success' }));
+            }
+        }
+    });
 });
 
 router.get('/*', (req, res) => {
