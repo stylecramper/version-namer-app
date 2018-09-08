@@ -1,0 +1,28 @@
+<h2>Create a New Project</h2>
+<div *ngIf="isLoggedIn">
+  <section class="projects new-project" *ngIf="projectCreationState==='precreate'">
+    <div class="container col-md-6 new-project-form">
+      <form [formGroup]="projectForm" class="needs-validation" (ngSubmit)="createProject(projectForm)">
+        <div class="form-group">
+          <label for="project_name" class="control-label">Project name: <br />
+            <input
+              type="text"
+              class="form-control"
+              #projectname
+              id="project_name"
+              [formControl]="projectForm.controls['projectname']"
+            >
+          </label>
+        </div>
+        <button
+        [disabled]="projectForm.invalid"
+        type="submit"
+        class="btn btn-primary">Create Project</button>
+      </form>
+
+    </div>
+  </section>
+</div>
+<div *ngIf="!isLoggedIn">
+You must be signed in to create a new project.
+</div>
