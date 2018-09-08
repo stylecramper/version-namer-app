@@ -1,0 +1,43 @@
+<h3>Version names for project "<span>{{ project.name }}</span>"</h3>
+<h4 *ngIf="error === 'projectId'">Ain't no project like dat</h4>
+<h4 *ngIf="error === 'generic'">Some weird thing went wrong</h4>
+
+<h4 *ngIf="!hasVersionNames()">You have no version names for this project yet.</h4>
+<ul class="names-list" *ngIf="hasVersionNames()">
+  <li *ngFor="let versionName of versionNames" [ngClass]="{ 'current-name': isCurrentVersionName(versionName) }">
+    <span>{{ versionName.adjective }} {{ versionName.animal }}</span> <button class="btn btn-danger" (click)="deleteName(versionName)">Delete</button>
+  </li>
+</ul>
+<button (click)="showVersionName()" *ngIf="!dashboardOpen" class="btn btn-primary" style="position: relative; z-index: 100">Create a new version name</button>
+<div class="dashboard-mask" *ngIf="dashboardOpen"></div>
+<div class="dashboard-container" *ngIf="dashboardOpen">
+  <div class="version-name-dashboard">
+    <div class="dashboard-innermask"></div>
+    <div class="names-container">
+      <span
+        class="version-name-container adjective"
+        *ngIf="animationState === 'active'"
+        [@adjectiveState]="'in'"
+        (@adjectiveState.done)="animationDone($event)"
+        [attr.data-nameid]="adjective._id">{{ adjective._adjective }}</span>
+      <span
+        class="version-name-container animal"
+        *ngIf="animationState === 'active'"
+        [@animalState]="'in'"
+        [attr.data-nameid]="animal._id">{{ animal._animal }}</span>
+    </div>
+    <div class="name-action-buttons">
+      <button
+        class="btn btn-success yep-button"
+        [@buttonState]="'in'"
+        *ngIf="wordsAreIn"
+        (click)="saveNewVersionName()">Yep</button>
+      <button
+        class="btn btn-danger nope-button"
+        [@buttonState]="'in'"
+        *ngIf="wordsAreIn"
+        (click)="nextName()">Nope</button>
+    </div>
+  </div>
+  <button (click)="closeDashboard()" *ngIf="dashboardOpen" class="btn btn-light close-button">X</button>
+</div>
