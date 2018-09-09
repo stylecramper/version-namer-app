@@ -8,10 +8,12 @@ import { MAT_DIALOG_DATA } from '@angular/material';
 })
 export class ConfirmDialogComponent {
     private modalTitle = '';
+    private modalContent = '';
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: any
     ) {
         this.modalTitle = data.title;
+        this.modalContent = data.content;
     }
 }

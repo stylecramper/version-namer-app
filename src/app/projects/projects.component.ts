@@ -85,6 +85,7 @@ export class ProjectsComponent implements OnInit {
     dialogConfig.data = {
       id: 1,
       title: 'Delete Project',
+      content: 'Are you sure you want to delete this project?',
       project: project
     };
 

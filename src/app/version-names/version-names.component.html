@@ -5,7 +5,7 @@
 <h4 *ngIf="!hasVersionNames()">You have no version names for this project yet.</h4>
 <ul class="names-list" *ngIf="hasVersionNames()">
   <li *ngFor="let versionName of versionNames" [ngClass]="{ 'current-name': isCurrentVersionName(versionName) }">
-    <span>{{ versionName.adjective }} {{ versionName.animal }}</span> <button class="btn btn-danger" (click)="deleteName(versionName)">Delete</button>
+    <span>{{ versionName.adjective }} {{ versionName.animal }}</span> <button class="btn btn-danger" (click)="openConfirmDialog(versionName)">Delete</button>
   </li>
 </ul>
 <button (click)="showVersionName()" *ngIf="!dashboardOpen" class="btn btn-primary" style="position: relative; z-index: 100">Create a new version name</button>

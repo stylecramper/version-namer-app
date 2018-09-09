@@ -1,12 +1,13 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Router, ActivatedRoute } from '@angular/router';
+import { MatDialog, MatDialogConfig } from '@angular/material';
 
 import { NamesService } from './../services/names.service';
 import { Animal, Adjective } from '../models/names.models';
 import { ProjectsService } from './../services/projects.service';
 import { VersionNamesService } from './../services/version-names.service';
-
+import { ConfirmDialogComponent } from './../common/confirm-dialog/confirm-dialog.component';
 import { ProjectType } from './../types/project-types';
 import { VersionNameType } from '../types/version-name-types';
 
@@ -71,7 +72,8 @@ export class VersionNamesComponent implements OnInit {
     private router: Router,
     private namesService: NamesService,
     private projectsService: ProjectsService,
-    private versionNamesService: VersionNamesService
+    private versionNamesService: VersionNamesService,
+    public confirmDialog: MatDialog
   ) {
     this.animationState = 'inactive';
   }
@@ -145,6 +147,31 @@ export class VersionNamesComponent implements OnInit {
     if (confirm('WAIT! Are you sure you want to delete this version name?')) {
 
     }
+  }
+
+  openConfirmDialog(versionName: VersionNameType): void {
+    const dialogConfig = new MatDialogConfig();
+    const current = this.isCurrentVersionName(versionName);
+
+    dialogConfig.autoFocus = true;
+    dialogConfig.disableClose = true;
+    dialogConfig.height = '220px';
+    dialogConfig.width = '400px';
+    dialogConfig.data = {
+      id: 1,
+      title: current ? 'Delete current version name' : 'Delete version name',
+      content: current ? 'This is the current version name. Are you sure you want to delete it?' : 'Are you sure you want to delete this version name?',
+      versionName: versionName
+    };
+
+    const dialogRef = this.confirmDialog.open(ConfirmDialogComponent, dialogConfig);
+
+    dialogRef.afterClosed()
+      .subscribe(result => {
+        if (result) {
+          this.deleteName(dialogConfig.data.versionName);
+        }
+      });
   }
 
   nextName(): void {
