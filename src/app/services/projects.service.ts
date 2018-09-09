@@ -28,38 +28,38 @@ export class ProjectsService implements OnInit {
     fetchProjects(): Observable<ProjectsResultType> {
         let projectsResult: Observable<any>;
 
-        if (this.authService.isLoggedIn()) {
-            if (this.projects.length === 0) {
-                const headers = new Headers();
-                headers.append('Authorization', 'Bearer ' + this.authService.getUser().token);
-                projectsResult = this.http.get('api/projects', {headers: headers})
-                    .map(response => response.json())
-                    .catch((e) => {
-                        return Observable.throw(new Error(`${ e.status } ${ e.statusText }`));
-                    });
-            } else {
-                projectsResult = Observable.of({code: 'success', projects: this.projects});
-            }
-            return projectsResult;
+        if (!this.authService.isLoggedIn()) {
+            return Observable.throw(new Error('no-login'));
         }
-        return Observable.throw(new Error('no-login'));
-    }
-
-    createProject(project: object): Observable<any> {
-        if (this.authService.isLoggedIn()) {
+        if (this.projects.length === 0) {
             const headers = new Headers();
             headers.append('Authorization', 'Bearer ' + this.authService.getUser().token);
-            const projectResult: Observable<any> = this.http.post('api/projects', {project: project}, {headers: headers})
-                .map((response) => {
-                    this.versionNames = [];
-                    return response.json();
-                })
+            projectsResult = this.http.get('api/projects', {headers: headers})
+                .map(response => response.json())
                 .catch((e) => {
                     return Observable.throw(new Error(`${ e.status } ${ e.statusText }`));
                 });
-            return projectResult;
+        } else {
+            projectsResult = Observable.of({code: 'success', projects: this.projects});
         }
-        return Observable.throw(new Error('no-login'));
+        return projectsResult;
+    }
+
+    createProject(project: object): Observable<any> {
+        if (!this.authService.isLoggedIn()) {
+            return Observable.throw(new Error('no-login'));
+        }
+        const headers = new Headers();
+        headers.append('Authorization', 'Bearer ' + this.authService.getUser().token);
+        const projectResult: Observable<any> = this.http.post('api/projects', {project: project}, {headers: headers})
+            .map((response) => {
+                this.versionNames = [];
+                return response.json();
+            })
+            .catch((e) => {
+                return Observable.throw(new Error(`${ e.status } ${ e.statusText }`));
+            });
+        return projectResult;
     }
 
     deleteProject(projectId: string): Observable<any> {
