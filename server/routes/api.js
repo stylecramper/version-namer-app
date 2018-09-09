@@ -234,6 +234,32 @@ router.post('/version-names/:id', jwtCheck, (req, res) => {
         });
 });
 
+router.delete('/version-names/:id', jwtCheck, (req, res) => {
+    console.log('DELETE version-name', req.params.id);
+    console.log('FROM project', req.query.project);
+    // TODO: improve error responses
+    ProjectVersionName.findByIdAndRemove(req.params.id, (err, name) => {
+        if (err) {
+            res
+                .status(200)
+                .send(JSON.stringify({code: 'version_name_deletion_error'}));
+            return;
+        }
+        Project.findById(req.query.project).then((projectfound) => {
+            projectfound.project_version_names = projectfound.project_version_names.filter((pvn) => {
+                return pvn._id !== req.params.id;
+            });
+            projectfound.save((err) => {
+                if (err) {
+                    res.status(200).send(JSON.stringify({ code: 'save_project_error' }));
+                } else {
+                    res.status(200).send(JSON.stringify({ code: 'success', versionNameId: req.params.id }));
+                }
+            });
+        });
+    });
+});
+
 router.get('/animals', (req, res) => {
     var animals;
 

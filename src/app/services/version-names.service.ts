@@ -65,6 +65,26 @@ export class VersionNamesService {
         return versionNameResult;
     }
 
+    deleteVersionName(versionNameId: string, projectId: string): Observable<any> {
+        if (!this.authService.isLoggedIn()) {
+            return Observable.throw(new Error('no-login'));
+        }
+        const headers = new Headers();
+        headers.append('Authorization', 'Bearer ' + this.authService.getUser().token);
+        const versionNameDeleteResult: Observable<any> = this.http.delete('api/version-names/' + versionNameId + '?project=' + projectId, {headers: headers})
+            .map((response) => {
+                return response.json();
+            })
+            .catch((e) => {
+                return Observable.throw(new Error(`${ e.status } ${ e.statusText }`));
+            });
+        return versionNameDeleteResult;
+    }
+
+    setVersionNames(versionNames: Array<VersionNameType>): void {
+        this.versionNames = versionNames;
+    }
+
     mapVersionName(versionName: any): VersionNameType {
         return { id: versionName._id, adjective: versionName.adjective, animal: versionName.animal };
     }

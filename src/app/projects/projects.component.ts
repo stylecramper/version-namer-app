@@ -62,17 +62,17 @@ export class ProjectsComponent implements OnInit {
 
   deleteProject(project: ProjectType): any {
     this.projectsService.deleteProject(project.id)
-    .subscribe((data) => {
-      console.log('### deleteProject data', data);
-      if (data.code === 'success') {
-        this.projects = this.projects.filter((proj: ProjectType) => {
-          return proj.id !== data.projectId;
-        });
-        this.projectsService.setProjects(this.projects);
-      } else {
-        // TODO: error handling
-      }
-    });
+      .subscribe((data) => {
+        console.log('### deleteProject data', data);
+        if (data.code === 'success') {
+          this.projects = this.projects.filter((proj: ProjectType) => {
+            return proj.id !== data.projectId;
+          });
+          this.projectsService.setProjects(this.projects);
+        } else {
+          // TODO: error handling
+        }
+      });
   }
 
   openConfirmDialog(project: ProjectType): void {

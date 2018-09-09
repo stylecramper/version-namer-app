@@ -143,10 +143,17 @@ export class VersionNamesComponent implements OnInit {
       });
   }
 
-  deleteName(name: VersionNameType): void {
-    if (confirm('WAIT! Are you sure you want to delete this version name?')) {
-
-    }
+  deleteName(versionName: VersionNameType): void {
+      this.versionNamesService.deleteVersionName(versionName.id, this.project.id)
+        .subscribe((data) => {
+          console.log('### deleteName data', data);
+          if (data.code === 'success') {
+            this.versionNames = this.versionNames.filter((name: VersionNameType) => {
+              return name.id !== data.versionNameId;
+            });
+            this.versionNamesService.setVersionNames(this.versionNames);
+          }
+        });
   }
 
   openConfirmDialog(versionName: VersionNameType): void {
