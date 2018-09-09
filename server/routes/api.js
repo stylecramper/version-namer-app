@@ -139,6 +139,50 @@ router.post('/projects', jwtCheck, (req, res) => {
         });
 });
 
+router.delete('/projects/:id', jwtCheck, (req, res) => {
+    console.log('DELETE project', req.params.id);
+    // TODO: improve error responses
+    Project.findById(req.params.id, 'project_version_names').exec((err, docs) => {
+        let error;
+
+        if (err) {console.log('#### err', err.name + ', ' + err.kind);
+            if (err.name === 'CastError' && err.kind === 'ObjectId') {
+                error = { code: 'project_id_error' };
+            } else {
+                error = { code: 'generic_error' };
+            }
+        } else {
+            ProjectVersionName.find({
+                '_id': { $in: docs.project_version_names }
+            }, (err, docs) => {
+                if (err) {
+                    error = { code: 'error' };
+                } else {
+                    docs.map((name) => {console.log('#### deleting name', name._id);
+                        ProjectVersionName.findByIdAndRemove(name._id, (err, name) => {
+                            if (err) {
+                                error = {code: 'version_name_deletion_error'};
+                            }
+                        });
+                    });
+                    Project.findByIdAndRemove(req.params.id, (err, project) => {
+                        if (err) {
+                            error = {code: 'project_deletion_error'};
+                        }
+                    });
+                }
+            });
+        }
+        if (error) {
+            res
+                .status(200)
+                .send(JSON.stringify(error));
+            return;
+        }
+        res.status(200).send(JSON.stringify({ code: 'success', projectId: req.params.id }));
+    });
+});
+
 router.get('/version-names/:id', jwtCheck, (req, res) => {
     Project.findById(req.params.id, 'project_version_names').exec((err, docs) => {
         if (err) {console.log('#### err', err.name + ', ' + err.kind);

@@ -62,6 +62,22 @@ export class ProjectsService implements OnInit {
         return Observable.throw(new Error('no-login'));
     }
 
+    deleteProject(projectId: string): Observable<any> {
+        if (!this.authService.isLoggedIn()) {
+            return Observable.throw(new Error('no-login'));
+        }
+        const headers = new Headers();
+        headers.append('Authorization', 'Bearer ' + this.authService.getUser().token);
+        const projectDeleteResult: Observable<any> = this.http.delete('api/projects/' + projectId, {headers: headers})
+            .map((response) => {
+                return response.json();
+            })
+            .catch((e) => {
+                return Observable.throw(new Error(`${ e.status } ${ e.statusText }`));
+            });
+        return projectDeleteResult;
+    }
+
     setProjects(projects: Array<ProjectType>): void {
         this.projects = projects;
     }
