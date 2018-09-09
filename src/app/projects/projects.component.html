@@ -10,7 +10,7 @@
         <span class="project-name">{{ project.name }}</span>
         <div>
           <button class="btn btn-secondary" (click)="editVersionNames(project)">Edit version names</button>
-          <button class="btn btn-danger">Delete</button>
+          <button class="btn btn-danger" (click)="openConfirmDialog(project)">Delete</button>
         </div>
       </li>
     </ul>

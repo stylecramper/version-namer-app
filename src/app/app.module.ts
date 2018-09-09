@@ -1,11 +1,14 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatDialogModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
+import { ConfirmDialogComponent } from './common/confirm-dialog/confirm-dialog.component';
 import { HomeComponent } from './home/home.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { NamesService } from './services/names.service';
@@ -54,6 +57,7 @@ const ROUTES = [
 @NgModule({
   declarations: [
     AppComponent,
+    ConfirmDialogComponent,
     HomeComponent,
     NavigationComponent,
     SignInComponent,
@@ -66,10 +70,15 @@ const ROUTES = [
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    MatDialogModule,
+    MatButtonModule,
     FormsModule,
     ReactiveFormsModule,
     HttpModule,
     RouterModule.forRoot(ROUTES)
+  ],
+  entryComponents: [
+    ConfirmDialogComponent
   ],
   providers: [NamesService, AuthService, ProjectsService],
   bootstrap: [AppComponent]

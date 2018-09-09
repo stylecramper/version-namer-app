@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { MatDialog, MatDialogConfig } from '@angular/material';
 
 import { AuthService } from '../services/auth.service';
 import { ProjectsService } from './../services/projects.service';
 import { ProjectType } from '../types/project-types';
+import { ConfirmDialogComponent } from './../common/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-projects',
@@ -18,7 +20,8 @@ export class ProjectsComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private projectsService: ProjectsService,
-    private router: Router
+    private router: Router,
+    public confirmDialog: MatDialog
   ) {
     this.authService.getLoggedInStatus
       .subscribe(status => this.changeLoggedInStatus(status));
@@ -55,6 +58,34 @@ export class ProjectsComponent implements OnInit {
 
   editVersionNames(project: ProjectType): void {
     this.router.navigate(['/version-names/', project.id]);
+  }
+
+  deleteProject(project: ProjectType): any {
+    console.log('### deleting project', project);
+    // TODO: call delete in API
+  }
+
+  openConfirmDialog(project: ProjectType): void {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.autoFocus = true;
+    dialogConfig.disableClose = true;
+    dialogConfig.height = '180px';
+    dialogConfig.width = '400px';
+    dialogConfig.data = {
+      id: 1,
+      title: 'Delete Project',
+      project: project
+    };
+
+    const dialogRef = this.confirmDialog.open(ConfirmDialogComponent, dialogConfig);
+
+    dialogRef.afterClosed()
+      .subscribe(result => {
+        if (result) {
+          this.deleteProject(dialogConfig.data.project);
+        }
+      });
   }
 
 }

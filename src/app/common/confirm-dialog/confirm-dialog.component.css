@@ -1,0 +1,7 @@
+.mat-dialog-actions {
+    justify-content: flex-end;
+}
+
+.mat-dialog-actions .mat-warn {
+    margin-left: 1em;
+}
