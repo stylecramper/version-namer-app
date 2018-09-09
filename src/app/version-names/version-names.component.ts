@@ -5,7 +5,10 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { NamesService } from './../services/names.service';
 import { Animal, Adjective } from '../models/names.models';
 import { ProjectsService } from './../services/projects.service';
-import { ProjectType, VersionNameType } from './../types/project-types';
+import { VersionNamesService } from './../services/version-names.service';
+
+import { ProjectType } from './../types/project-types';
+import { VersionNameType } from '../types/version-name-types';
 
 @Component({
   selector: 'app-version-names',
@@ -67,7 +70,8 @@ export class VersionNamesComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private namesService: NamesService,
-    private projectsService: ProjectsService
+    private projectsService: ProjectsService,
+    private versionNamesService: VersionNamesService
   ) {
     this.animationState = 'inactive';
   }
@@ -75,7 +79,7 @@ export class VersionNamesComponent implements OnInit {
   ngOnInit() {
     const projectId = this.route.snapshot.params['id'];
     this.project = this.projectsService.getProject(projectId);
-    this.projectsService.fetchVersionNames(projectId)
+    this.versionNamesService.fetchVersionNames(projectId)
         .subscribe((data) => {console.log('## ngOnInit data', data);
           if (data.code === 'project_id_error') {
             this.error = 'projectId';
@@ -126,7 +130,7 @@ export class VersionNamesComponent implements OnInit {
 
   saveNewVersionName(): void {
     const payload = { animal: this.animal, adjective: this.adjective };
-    this.projectsService.saveVersionName(this.project.id, payload)
+    this.versionNamesService.saveVersionName(this.project.id, payload)
       .subscribe((data) => {console.log('#### saveVersionName data', data);
           if (data.code === 'success') {
             this.project.current_version_name = data.versionName.id;
