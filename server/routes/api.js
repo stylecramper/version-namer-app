@@ -198,7 +198,7 @@ router.get('/version-names/:id', jwtCheck, (req, res) => {
         } else {
             ProjectVersionName.find({
                 '_id': { $in: docs.project_version_names }
-            }, (err, docs) => {
+            }, null, { sort: 'created_at' }, (err, docs) => {
                 if (err) {
                     res.status(200).send(JSON.stringify({ code: 'error' }));
                 } else {
