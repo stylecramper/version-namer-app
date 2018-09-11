@@ -1,7 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatDialogConfig } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatSnackBar } from '@angular/material';
 
 import { NamesService } from './../services/names.service';
 import { Animal, Adjective } from '../models/names.models';
@@ -73,7 +73,8 @@ export class VersionNamesComponent implements OnInit {
     private namesService: NamesService,
     private projectsService: ProjectsService,
     private versionNamesService: VersionNamesService,
-    public confirmDialog: MatDialog
+    public confirmDialog: MatDialog,
+    public snackBar: MatSnackBar
   ) {
     this.animationState = 'inactive';
   }
@@ -148,6 +149,7 @@ export class VersionNamesComponent implements OnInit {
         .subscribe((data) => {
           console.log('### deleteName data', data);
           if (data.code === 'success') {
+            this.snackBar.open(`Version name "${data.versionName}" deleted.`, '', { duration: 1000 });
             this.versionNames = this.versionNames.filter((name: VersionNameType) => {
               return name.id !== data.versionNameId;
             });

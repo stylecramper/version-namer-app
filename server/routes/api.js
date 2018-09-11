@@ -238,7 +238,7 @@ router.delete('/version-names/:id', jwtCheck, (req, res) => {
     console.log('DELETE version-name', req.params.id);
     console.log('FROM project', req.query.project);
     // TODO: improve error responses
-    ProjectVersionName.findByIdAndRemove(req.params.id, (err, name) => {
+    ProjectVersionName.findByIdAndRemove(req.params.id, (err, docs) => {
         if (err) {
             res
                 .status(200)
@@ -253,7 +253,7 @@ router.delete('/version-names/:id', jwtCheck, (req, res) => {
                 if (err) {
                     res.status(200).send(JSON.stringify({ code: 'save_project_error' }));
                 } else {
-                    res.status(200).send(JSON.stringify({ code: 'success', versionNameId: req.params.id }));
+                    res.status(200).send(JSON.stringify({ code: 'success', versionNameId: req.params.id, versionName: `${docs.adjective} ${docs.animal}` }));
                 }
             });
         });
