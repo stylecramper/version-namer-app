@@ -142,7 +142,7 @@ router.post('/projects', jwtCheck, (req, res) => {
 router.delete('/projects/:id', jwtCheck, (req, res) => {
     console.log('DELETE project', req.params.id);
     // TODO: improve error responses
-    Project.findById(req.params.id, 'project_version_names').exec((err, docs) => {
+    Project.findById(req.params.id, 'project_name project_version_names').exec((err, docs) => {
         let error;
 
         if (err) {console.log('#### err', err.name + ', ' + err.kind);
@@ -179,7 +179,7 @@ router.delete('/projects/:id', jwtCheck, (req, res) => {
                 .send(JSON.stringify(error));
             return;
         }
-        res.status(200).send(JSON.stringify({ code: 'success', projectId: req.params.id }));
+        res.status(200).send(JSON.stringify({ code: 'success', projectId: req.params.id, projectName: docs.project_name }));
     });
 });
 

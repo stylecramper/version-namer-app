@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatDialog, MatDialogConfig } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatSnackBar } from '@angular/material';
 
 import { AuthService } from '../services/auth.service';
 import { ProjectsService } from './../services/projects.service';
@@ -21,7 +21,8 @@ export class ProjectsComponent implements OnInit {
     private authService: AuthService,
     private projectsService: ProjectsService,
     private router: Router,
-    public confirmDialog: MatDialog
+    public confirmDialog: MatDialog,
+    public snackBar: MatSnackBar
   ) {
     this.authService.getLoggedInStatus
       .subscribe(status => this.changeLoggedInStatus(status));
@@ -65,6 +66,7 @@ export class ProjectsComponent implements OnInit {
       .subscribe((data) => {
         console.log('### deleteProject data', data);
         if (data.code === 'success') {
+          this.snackBar.open(`Project "${data.projectName}" deleted.`, '', { duration: 1000 });
           this.projects = this.projects.filter((proj: ProjectType) => {
             return proj.id !== data.projectId;
           });
