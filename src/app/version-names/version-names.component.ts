@@ -153,6 +153,9 @@ export class VersionNamesComponent implements OnInit {
             this.versionNames = this.versionNames.filter((name: VersionNameType) => {
               return name.id !== data.versionNameId;
             });
+            if (data.versionNameId === this.project.current_version_name) {
+              this.project.current_version_name = this.versionNames[this.versionNames.length - 1].id;
+            }
             this.versionNamesService.setVersionNames(this.versionNames);
           }
         });

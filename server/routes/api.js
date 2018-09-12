@@ -247,8 +247,12 @@ router.delete('/version-names/:id', jwtCheck, (req, res) => {
         }
         Project.findById(req.query.project).then((projectfound) => {
             projectfound.project_version_names = projectfound.project_version_names.filter((pvn) => {
-                return pvn._id !== req.params.id;
+                return pvn.toString() !== req.params.id;
             });
+            if (projectfound.current_project_version_name.toString() === req.params.id) {
+                // deleted version name was current version name
+                projectfound.current_project_version_name = projectfound.project_version_names[projectfound.project_version_names.length - 1];
+            }
             projectfound.save((err) => {
                 if (err) {
                     res.status(200).send(JSON.stringify({ code: 'save_project_error' }));
