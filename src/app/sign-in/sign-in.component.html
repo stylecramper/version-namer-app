@@ -14,7 +14,7 @@
       type="email"
       name="email"
       #email
-      class="form-control">
+      class="form-control email-input">
     </div>
     <div class="form-group">
       <label for="password">Password:</label>
@@ -23,9 +23,12 @@
       type="password"
       name="password"
       #password
-      class="form-control">
+      class="form-control password-input">
     </div>
-    <button type="submit" class="btn btn-primary">Sign In</button>
+    <button
+    [disabled]="signinForm.invalid"
+    type="submit"
+    class="btn btn-primary">Sign In</button>
   </form>
   <div class="alert alert-danger" role="alert" *ngIf="message">
     {{ message }}

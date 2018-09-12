@@ -310,10 +310,10 @@ router.post('/users', (req, res) => {
 router.post('/login', (req, res) => {
     User.findOne({ email: req.body.email }, '_id firstname email password salt', (err, user) => {
         if (err) {
-            res.send(JSON.stringify({ code: 'generic_error' }));
+            res.send(JSON.stringify({ code: 'error', message: 'generic_error' }));
         } else {
             if (user === null) {
-                res.send(JSON.stringify({ code: 'unknown_email' }));
+                res.send(JSON.stringify({ code: 'error', message: 'unknown_email' }));
             } else {
                 if (bcrypt.hashSync(req.body.password, user.salt) === user.password) {
                     // user is valid, log them in
@@ -324,9 +324,9 @@ router.post('/login', (req, res) => {
                     // save token for user
                     res
                         .status(200)
-                        .send({ name: user.firstname, access_token: token });
+                        .send({ code: 'success', name: user.firstname, access_token: token });
                 } else {
-                    res.send(JSON.stringify({ code: 'incorrect_password' }));
+                    res.send(JSON.stringify({ code: 'error', message: 'incorrect_password' }));
                 }
             }
         }
