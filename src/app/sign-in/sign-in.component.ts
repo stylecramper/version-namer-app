@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -10,6 +10,8 @@ import { AuthService } from './../services/auth.service';
   styleUrls: ['./sign-in.component.css']
 })
 export class SignInComponent {
+  @ViewChild('email') emailField: ElementRef;
+  @ViewChild('password') passwordField: ElementRef;
   signinForm: FormGroup;
   message: string;
   ERROR_TYPES: any = {
@@ -57,8 +59,10 @@ export class SignInComponent {
 
   displayError(type: string): void {
     if (type === this.ERROR_TYPES.EMAIL) {
+      this.emailField.nativeElement.focus();
       this.message = this.ERROR_MESSAGES.EMAIL;
     } else if (type === this.ERROR_TYPES.PASSWORD) {
+      this.passwordField.nativeElement.focus();
       this.message = this.ERROR_MESSAGES.PASSWORD;
     }
   }
