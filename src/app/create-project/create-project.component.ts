@@ -15,6 +15,7 @@ export class CreateProjectComponent implements OnInit {
   private successValue = 'success';
   private isLoggedIn: boolean;
   private projectCreationState = 'precreate'; // 'success'
+  private loading = false;
 
   constructor(
     private fb: FormBuilder,
@@ -42,9 +43,11 @@ export class CreateProjectComponent implements OnInit {
   }
 
   createProject(form) {
+    this.loading = true;
     this.projectsService.createProject(form.value)
       .subscribe((res) => {
         if (res.code === this.successValue) {
+          this.loading = false;
           this.projectCreationState = this.successValue;
           this.projectsService.addProject(res.project);
           this.router.navigate(['/projects']);
