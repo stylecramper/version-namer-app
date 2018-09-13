@@ -148,10 +148,12 @@ export class VersionNamesComponent implements OnInit {
   }
 
   deleteName(versionName: VersionNameType): void {
+    this.loading = true;
       this.versionNamesService.deleteVersionName(versionName.id, this.project.id)
         .subscribe((data) => {
           console.log('### deleteName data', data);
           if (data.code === 'success') {
+            this.loading = false;
             this.snackBar.open(`Version name "${data.versionName}" deleted.`, '', { duration: 1000 });
             this.versionNames = this.versionNames.filter((name: VersionNameType) => {
               return name.id !== data.versionNameId;
