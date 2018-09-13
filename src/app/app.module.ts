@@ -22,6 +22,7 @@ import { ProjectsComponent } from './projects/projects.component';
 import { UtilityNavigationComponent } from './utility-navigation/utility-navigation.component';
 import { CreateProjectComponent } from './create-project/create-project.component';
 import { VersionNamesComponent } from './version-names/version-names.component';
+import { SpinnerComponent } from './common/spinner/spinner.component';
 
 const ROUTES = [
   {
@@ -67,7 +68,8 @@ const ROUTES = [
     ProjectsComponent,
     UtilityNavigationComponent,
     CreateProjectComponent,
-    VersionNamesComponent
+    VersionNamesComponent,
+    SpinnerComponent
   ],
   imports: [
     BrowserModule,
