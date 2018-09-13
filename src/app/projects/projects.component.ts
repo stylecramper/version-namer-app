@@ -24,7 +24,7 @@ export class ProjectsComponent implements OnInit {
     private router: Router,
     public confirmDialog: MatDialog,
     public snackBar: MatSnackBar
-  ) {
+  ) { 
     this.authService.getLoggedInStatus
       .subscribe(status => this.changeLoggedInStatus(status));
   }
@@ -64,9 +64,11 @@ export class ProjectsComponent implements OnInit {
   }
 
   deleteProject(project: ProjectType): any {
+    this.loading = true;
     this.projectsService.deleteProject(project.id)
       .subscribe((data) => {
         console.log('### deleteProject data', data);
+        this.loading = false;
         if (data.code === 'success') {
           this.snackBar.open(`Project "${data.projectName}" deleted.`, '', { duration: 1000 });
           this.projects = this.projects.filter((proj: ProjectType) => {
