@@ -66,6 +66,7 @@ export class VersionNamesComponent implements OnInit {
   adjective: Adjective;
   animal: Animal;
   animationState: string;
+  loading: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -80,6 +81,7 @@ export class VersionNamesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.loading = true;
     const projectId = this.route.snapshot.params['id'];
     this.project = this.projectsService.getProject(projectId);
     this.versionNamesService.fetchVersionNames(projectId)
@@ -89,6 +91,7 @@ export class VersionNamesComponent implements OnInit {
           } else if (data.code === 'generic_error') {
             this.error = 'generic';
           } else {
+            this.loading = false;
             this.versionNames = data.versionNames;
           }
         });
