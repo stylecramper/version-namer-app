@@ -135,10 +135,12 @@ export class VersionNamesComponent implements OnInit {
   }
 
   saveNewVersionName(): void {
+    this.loading = true;
     const payload = { animal: this.animal, adjective: this.adjective };
     this.versionNamesService.saveVersionName(this.project.id, payload)
       .subscribe((data) => {console.log('#### saveVersionName data', data);
           if (data.code === 'success') {
+            this.loading = false;
             this.project.current_version_name = data.versionName.id;
             this.closeDashboard();
           } else {
