@@ -16,6 +16,7 @@ export class RegisterComponent implements OnInit {
   password: AbstractControl;
   strongRegularExp: RegExp;
   mediumRegularExp: RegExp;
+  loading = false;
   private registrationState: null | string;
   private successValue = 'success';
 
@@ -47,9 +48,11 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  register(form) {console.log('#### register CALLED');
+  register(form) {
+    this.loading = true;
     this.authService.register(form.value)
       .subscribe((res) => {
+        this.loading = false;
         if (res.code === this.successValue) {
           this.registrationState = this.successValue;
         }
