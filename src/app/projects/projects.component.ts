@@ -16,7 +16,7 @@ export class ProjectsComponent implements OnInit {
   private isLoggedIn: boolean;
   private projects: Array<ProjectType> = [];
   private projectsFetched = false;
-  private loading = true;
+  private loading = false;
 
   constructor(
     private authService: AuthService,
@@ -50,6 +50,7 @@ export class ProjectsComponent implements OnInit {
   }
 
   fetchProjects() {
+    this.loading = true;
     this.projectsService.fetchProjects()
         .subscribe((data) => {
           this.projectsFetched = true;
