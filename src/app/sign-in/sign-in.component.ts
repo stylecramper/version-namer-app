@@ -14,6 +14,7 @@ export class SignInComponent {
   @ViewChild('password') passwordField: ElementRef;
   signinForm: FormGroup;
   message: string;
+  loading = false;
   ERROR_TYPES: any = {
     EMAIL: 'unknown_email',
     PASSWORD: 'incorrect_password'
@@ -40,9 +41,11 @@ export class SignInComponent {
   }
 
   login(form) {
+    this.loading = true;
     this.message = '';
     this.authService.login(form.controls.email.value, form.controls.password.value)
       .subscribe((res) => {
+        this.loading = false;
         if (res.code === 'success') {
           this.authService.setUser(res.name, res.access_token);
           this.close();
