@@ -90,17 +90,21 @@ mongodb.MongoClient.connect('mongodb://localhost:27017/VERSION_NAMES', function(
 
 });
 
+/* ----------- ********* ------------
+                PROJECTS
+   ----------- ********* ------------ */
+
 router.get('/projects', jwtCheck, (req, res) => {
     // TODO: deal with user not being found?
-    User.findById(req.user.id, 'projects').exec((err, projects) => {
+    User.findById(req.user.id, 'projects').exec((err, docs) => {
         Project.find({
-            '_id': { $in: projects.projects }
+            '_id': { $in: docs.projects }
         }, (err, userProjects) => {
             let projectsList;
 
             if (err) {
                 console.log('Projects fetching error: ', err);
-                res.status(200).send(JSON.stringify({ code: 'error' }));
+                res.status(200).json(JSON.stringify({ code: 'error' }));
                 return;
             }
             projectsList = userProjects.map((project) => {
@@ -112,7 +116,7 @@ router.get('/projects', jwtCheck, (req, res) => {
             });
             res
             .status(200)
-            .send(JSON.stringify({ code: 'success', projects: projectsList }));
+            .json(JSON.stringify({ code: 'success', projects: projectsList }));
         });
     });
 });
@@ -131,9 +135,9 @@ router.post('/projects', jwtCheck, (req, res) => {
                 userfound.projects = userfound.projects.concat([proj._id]);
                 userfound.save((err) => {console.log('### user save error', err);
                     if (err) {
-                        res.status(200).send(JSON.stringify({ code: 'error' }));
+                        res.status(200).json(JSON.stringify({ code: 'error' }));
                     } else {
-                        res.status(200).send(JSON.stringify({ code: 'success', project: { id: proj._id, name: proj.project_name, current_version_name: null } }));
+                        res.status(200).json(JSON.stringify({ code: 'success', project: { id: proj._id, name: proj.project_name, current_version_name: null } }));
                     }
                 });
             });
@@ -187,12 +191,16 @@ router.delete('/projects/:id', jwtCheck, (req, res) => {
         if (error) {
             res
                 .status(200)
-                .send(JSON.stringify(error));
+                .json(JSON.stringify(error));
             return;
         }
-        res.status(200).send(JSON.stringify({ code: 'success', projectId: req.params.id, projectName: docs.project_name }));
+        res.status(200).json(JSON.stringify({ code: 'success', projectId: req.params.id, projectName: docs.project_name }));
     });
 });
+
+/* ----------- ********* ------------
+            VERSION NAMES
+   ----------- ********* ------------ */
 
 router.get('/version-names/:id', jwtCheck, (req, res) => {
     Project.findById(req.params.id, 'project_version_names').exec((err, docs) => {
@@ -200,22 +208,22 @@ router.get('/version-names/:id', jwtCheck, (req, res) => {
             if (err.name === 'CastError' && err.kind === 'ObjectId') {
                 res
                 .status(200)
-                .send(JSON.stringify({ code: 'project_id_error' }));
+                .json(JSON.stringify({ code: 'project_id_error' }));
             } else {
                 res
                 .status(200)
-                .send(JSON.stringify({ code: 'generic_error' }));
+                .json(JSON.stringify({ code: 'generic_error' }));
             }
         } else {
             ProjectVersionName.find({
                 '_id': { $in: docs.project_version_names }
             }, null, { sort: 'created_at' }, (err, docs) => {
                 if (err) {
-                    res.status(200).send(JSON.stringify({ code: 'error' }));
+                    res.status(200).json(JSON.stringify({ code: 'error' }));
                 } else {
                     res
                     .status(200)
-                    .send(JSON.stringify({ code: 'success', versionNames: docs }));
+                    .json(JSON.stringify({ code: 'success', versionNames: docs }));
                 }
             });
         }
@@ -236,9 +244,9 @@ router.post('/version-names/:id', jwtCheck, (req, res) => {
                 projectfound.current_project_version_name = pvn._id;
                 projectfound.save((err) => {console.log('### project save error', err);
                     if (err) {
-                        res.status(200).send(JSON.stringify({ code: 'error' }));
+                        res.status(200).json(JSON.stringify({ code: 'error' }));
                     } else {
-                        res.status(200).send(JSON.stringify({ code: 'success', versionName: { id: pvn._id, adjective: pvn.adjective, animal: pvn.animal } }));
+                        res.status(200).json(JSON.stringify({ code: 'success', versionName: { id: pvn._id, adjective: pvn.adjective, animal: pvn.animal } }));
                     }
                 })
             });
@@ -253,7 +261,7 @@ router.delete('/version-names/:id', jwtCheck, (req, res) => {
         if (err) {
             res
                 .status(200)
-                .send(JSON.stringify({code: 'version_name_deletion_error'}));
+                .json(JSON.stringify({code: 'version_name_deletion_error'}));
             return;
         }
         Project.findById(req.query.project).then((projectfound) => {
@@ -266,34 +274,18 @@ router.delete('/version-names/:id', jwtCheck, (req, res) => {
             }
             projectfound.save((err) => {
                 if (err) {
-                    res.status(200).send(JSON.stringify({ code: 'save_project_error' }));
+                    res.status(200).json(JSON.stringify({ code: 'save_project_error' }));
                 } else {
-                    res.status(200).send(JSON.stringify({ code: 'success', versionNameId: req.params.id, versionName: `${docs.adjective} ${docs.animal}` }));
+                    res.status(200).json(JSON.stringify({ code: 'success', versionNameId: req.params.id, versionName: `${docs.adjective} ${docs.animal}` }));
                 }
             });
         });
     });
 });
 
-router.get('/animals', (req, res) => {
-    var animals;
-
-    Animal.find({}, function(error, animals) {
-        animals = animals;
-        res.send(JSON.stringify(animals));
-    });
-    
-});
-
-router.get('/adjectives', (req, res) => {
-    var adjectives;
-
-    Adjective.find({}, function(error, adjectives) {
-        adjectives = adjectives;
-        res.send(JSON.stringify(adjectives));
-    });
-    
-});
+/* ----------- ********* ------------
+                USERS
+   ----------- ********* ------------ */
 
 router.post('/users', (req, res) => {
     const newSalt = bcrypt.genSaltSync(5);
@@ -311,9 +303,9 @@ router.post('/users', (req, res) => {
     });
     user.save((err) => {console.log('### err', err);
         if (err) {
-            res.send(JSON.stringify({ code: 'error' }));
+            res.json(JSON.stringify({ code: 'error' }));
         } else {
-            res.send(JSON.stringify({ code: 'success', user: user._id }));
+            res.json(JSON.stringify({ code: 'success', user: user._id }));
         }
     });
 });
@@ -321,10 +313,10 @@ router.post('/users', (req, res) => {
 router.post('/login', (req, res) => {
     User.findOne({ email: req.body.email }, '_id firstname email password salt', (err, user) => {
         if (err) {
-            res.send(JSON.stringify({ code: 'error', message: 'generic_error' }));
+            res.json(JSON.stringify({ code: 'error', message: 'generic_error' }));
         } else {
             if (user === null) {
-                res.send(JSON.stringify({ code: 'error', message: 'unknown_email' }));
+                res.json(JSON.stringify({ code: 'error', message: 'unknown_email' }));
             } else {
                 if (bcrypt.hashSync(req.body.password, user.salt) === user.password) {
                     // user is valid, log them in
@@ -335,9 +327,9 @@ router.post('/login', (req, res) => {
                     // save token for user
                     res
                         .status(200)
-                        .send({ code: 'success', name: user.firstname, access_token: token });
+                        .json(JSON.stringify({ code: 'success', name: user.firstname, access_token: token }));
                 } else {
-                    res.send(JSON.stringify({ code: 'error', message: 'incorrect_password' }));
+                    res.json(JSON.stringify({ code: 'error', message: 'incorrect_password' }));
                 }
             }
         }
@@ -347,18 +339,40 @@ router.post('/login', (req, res) => {
 router.post('/logout', (req, res) => {
     User.findOne({ token: req.body.token }, (err, user) => {
         if (err) {
-            res.send(JSON.stringify({ code: 'generic_error' }));
+            res.json(JSON.stringify({ code: 'generic_error' }));
         } else {
             if (user === null) {
-                res.send(JSON.stringify({ code: 'generic_error' }));
+                res.json(JSON.stringify({ code: 'generic_error' }));
             } else {
                 user.update({ token: null }).exec();
                 res
                     .status(200)
-                    .send(JSON.stringify({ code: 'success' }));
+                    .json(JSON.stringify({ code: 'success' }));
             }
         }
     });
+});
+
+/* ----------- ********* ------------
+                PUBLIC
+   ----------- ********* ------------ */
+
+   router.get('/animals', (req, res) => {
+
+    Animal.find({}, function(error, animals) {
+        res.set('Content-Type', 'application/json');
+        res.status(200).send(JSON.stringify(animals));
+    });
+    
+});
+
+router.get('/adjectives', (req, res) => {
+
+    Adjective.find({}, function(error, adjectives) {
+        res.set('Content-Type', 'application/json');
+        res.status(200).send(JSON.stringify(adjectives));
+    });
+    
 });
 
 router.get('/*', (req, res) => {
