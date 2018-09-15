@@ -161,14 +161,24 @@ router.delete('/projects/:id', jwtCheck, (req, res) => {
                     docs.map((name) => {console.log('#### deleting name', name._id);
                         ProjectVersionName.findByIdAndRemove(name._id, (err, name) => {
                             if (err) {
-                                error = {code: 'version_name_deletion_error'};
+                                error = { code: 'version_name_deletion_error' };
                             }
                         });
                     });
                     Project.findByIdAndRemove(req.params.id, (err, project) => {
                         if (err) {
-                            error = {code: 'project_deletion_error'};
+                            error = { code: 'project_deletion_error' };
                         }
+                    });
+                    User.findById(req.user.id).then((userfound) => {
+                        userfound.projects = userfound.projects.filter((project) => {
+                            return project.toString() !== req.params.id;
+                        });
+                        userfound.save((err) => {
+                            if (err) {
+                                error = { code: 'user_save_error' };
+                            }
+                        });
                     });
                 }
             });
