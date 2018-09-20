@@ -7,10 +7,6 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const mongodb = require('mongodb');
 
-const ANIMALS_COLLECTION = 'animals';
-const ADJECTIVES_COLLECTION = 'adjectives';
-const PROJECTS_COLLECTION = 'projects';
-const USERS_COLLECTION = 'users';
 const SECRET_KEY = '998cf65a-1f0f-4325-81ea-315b08aec537';
 
 const mongoose = require('mongoose');
@@ -313,26 +309,32 @@ router.post('/users', (req, res) => {
 router.post('/login', (req, res) => {
     User.findOne({ email: req.body.email }, '_id firstname email password salt', (err, user) => {
         if (err) {
-            res.json(JSON.stringify({ code: 'error', message: 'generic_error' }));
-        } else {
-            if (user === null) {
-                res.json(JSON.stringify({ code: 'error', message: 'unknown_email' }));
-            } else {
-                if (bcrypt.hashSync(req.body.password, user.salt) === user.password) {
-                    // user is valid, log them in
-                    const token = jwt.sign({
-                        id: user._id,
-                        username: user.username
-                    }, SECRET_KEY, {expiresIn: '3 hours'});
-                    // save token for user
-                    res
-                        .status(200)
-                        .json(JSON.stringify({ code: 'success', name: user.firstname, access_token: token }));
-                } else {
-                    res.json(JSON.stringify({ code: 'error', message: 'incorrect_password' }));
-                }
-            }
+            res
+                .status(500)
+                .json({ code: 'error', message: 'generic_error' });
+            return;
         }
+        if (user === null) {
+            res
+                .status(401)
+                .json({ code: 'error', message: 'unknown_email' });
+            return;
+        }
+        if (bcrypt.hashSync(req.body.password, user.salt) === user.password) {
+            // user is valid, log them in
+            const token = jwt.sign({
+                id: user._id,
+                username: user.username
+            }, SECRET_KEY, {expiresIn: '3 hours'});
+            // save token for user
+            res
+                .status(200)
+                .json({ code: 'success', name: user.firstname, access_token: token });
+            return;
+        }
+        res
+            .status(401)
+            .json({ code: 'error', message: 'incorrect_password' });
     });
 });
 

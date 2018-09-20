@@ -1,41 +1,40 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-interface UserType { name: string, token: string };
+interface UserType { name: string; token: string; }
 
 @Injectable()
 export class AuthService {
   user: UserType;
   @Output() getLoggedInStatus: EventEmitter<boolean> = new EventEmitter();
 
-  constructor(private http: Http, private router: Router) {
+  constructor(private http: HttpClient, private router: Router) {
     this.user = { name: '', token: '' };
   }
 
   register(userData: object) {
     const registerResult: Observable<any> = this.http.post('api/users', userData)
-      .map(response => response.json())
+      .map((response) => { /* return response.json(); */ })
       .catch((e) => {
         return Observable.throw(new Error(`${ e.status } ${ e.statusText }`));
       });
     return registerResult;
   }
 
-  login(email: string, password: string) {
-    const loginResult: Observable<any> = this.http.post('api/login', {email: email, password: password})
-      .map(response => response.json())
-      .catch((e) => {
-        return Observable.throw(new Error(`${ e.status } ${ e.statusText }`));
+  login(email: string, password: string): Observable<any> {
+    return this.http.post('api/login', { email: email, password: password })
+      .catch((err) => {
+        return Observable.throw(new Error(err.error.message));
       });
-    return loginResult;
   }
 
   logout(): void {
     const logoutResult: Observable<any> = this.http.post('api/logout', { token: this.user.token })
-      .map(response => response.json())
+      .map((response) => { /* return response.json(); */ })
       .catch((e) => {
         return Observable.throw(new Error(`${ e.status } ${ e.statusText }`));
       });

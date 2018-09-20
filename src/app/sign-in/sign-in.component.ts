@@ -21,7 +21,8 @@ export class SignInComponent {
   };
   ERROR_MESSAGES: any = {
     EMAIL: 'We don\'t know that email',
-    PASSWORD: 'That password is incorrect'
+    PASSWORD: 'That password is incorrect',
+    GENERIC: 'Some random weird thing happened'
   };
 
   constructor(private fb: FormBuilder, public authService: AuthService, private router: Router) {
@@ -44,14 +45,13 @@ export class SignInComponent {
     this.loading = true;
     this.message = '';
     this.authService.login(form.controls.email.value, form.controls.password.value)
-      .subscribe((res) => {
+      .subscribe((response) => {
         this.loading = false;
-        if (res.code === 'success') {
-          this.authService.setUser(res.name, res.access_token);
-          this.close();
-        } else {
-          this.displayError(res.message);
-        }
+        this.authService.setUser(response.name, response.access_token);
+        this.close();
+      }, (err) => {
+        this.loading = false;
+        this.displayError(err);
       });
   }
 
@@ -60,13 +60,19 @@ export class SignInComponent {
     return false;
   }
 
-  displayError(type: string): void {
-    if (type === this.ERROR_TYPES.EMAIL) {
-      this.emailField.nativeElement.focus();
-      this.message = this.ERROR_MESSAGES.EMAIL;
-    } else if (type === this.ERROR_TYPES.PASSWORD) {
-      this.passwordField.nativeElement.focus();
-      this.message = this.ERROR_MESSAGES.PASSWORD;
+  displayError(error: Error): void {
+    switch (error.message) {
+      case this.ERROR_TYPES.EMAIL:
+        this.emailField.nativeElement.focus();
+        this.message = this.ERROR_MESSAGES.EMAIL;
+        break;
+      case this.ERROR_TYPES.PASSWORD:
+        this.passwordField.nativeElement.focus();
+        this.message = this.ERROR_MESSAGES.PASSWORD;
+        break;
+      default:
+        this.message = this.ERROR_MESSAGES.GENERIC;
+        break;
     }
   }
 
