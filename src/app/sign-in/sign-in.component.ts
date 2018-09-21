@@ -51,16 +51,11 @@ export class SignInComponent {
         this.close();
       }, (err) => {
         this.loading = false;
-        this.displayError(err);
+        this.displayLoginError(err);
       });
   }
 
-  logout(): boolean {
-    this.authService.logout();
-    return false;
-  }
-
-  displayError(error: Error): void {
+  displayLoginError(error: Error): void {
     switch (error.message) {
       case this.ERROR_TYPES.EMAIL:
         this.emailField.nativeElement.focus();
