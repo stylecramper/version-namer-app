@@ -1,5 +1,5 @@
-import { Http } from '@angular/http';
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { AuthService } from './services/auth.service';
 
@@ -9,17 +9,17 @@ import { AuthService } from './services/auth.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title: string = 'Version Name Generator';
+  title = 'Version Name Generator';
 
-  constructor(private authService: AuthService) {
-
-  }
+  constructor(private router: Router, private authService: AuthService) { }
 
   loggedIn(): boolean {
     return this.authService.isLoggedIn();
   }
 
   logout(): void {
-    this.authService.logout();
+    localStorage.removeItem('username');
+    localStorage.removeItem('usertoken');
+    this.router.navigate(['/home', { outlets: { signin: null }}]);
   }
 }

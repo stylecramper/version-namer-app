@@ -1,7 +1,5 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
-import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -12,7 +10,7 @@ export class AuthService {
   user: UserType;
   @Output() getLoggedInStatus: EventEmitter<boolean> = new EventEmitter();
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private http: HttpClient) {
     this.user = { name: '', token: '' };
   }
 
@@ -33,19 +31,7 @@ export class AuthService {
   }
 
   logout(): void {
-    const logoutResult: Observable<any> = this.http.post('api/logout', { token: this.user.token })
-      .map((response) => { /* return response.json(); */ })
-      .catch((e) => {
-        return Observable.throw(new Error(`${ e.status } ${ e.statusText }`));
-      });
-    logoutResult
-      .subscribe((res) => {console.log('##### logging out successful');
-        this.user.token = '';
-        localStorage.removeItem('username');
-        localStorage.removeItem('usertoken');
-        this.router.navigate(['/home', { outlets: { signin: null }}]);
-      });
-
+    this.user.token = '';
   }
 
   getUser(): UserType {

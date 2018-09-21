@@ -326,7 +326,6 @@ router.post('/login', (req, res) => {
                 id: user._id,
                 username: user.username
             }, SECRET_KEY, {expiresIn: '3 hours'});
-            // save token for user
             res
                 .status(200)
                 .json({ code: 'success', name: user.firstname, access_token: token });
@@ -335,23 +334,6 @@ router.post('/login', (req, res) => {
         res
             .status(401)
             .json({ code: 'error', message: 'incorrect_password' });
-    });
-});
-
-router.post('/logout', (req, res) => {
-    User.findOne({ token: req.body.token }, (err, user) => {
-        if (err) {
-            res.json(JSON.stringify({ code: 'generic_error' }));
-        } else {
-            if (user === null) {
-                res.json(JSON.stringify({ code: 'generic_error' }));
-            } else {
-                user.update({ token: null }).exec();
-                res
-                    .status(200)
-                    .json(JSON.stringify({ code: 'success' }));
-            }
-        }
     });
 });
 

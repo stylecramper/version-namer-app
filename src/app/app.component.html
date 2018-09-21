@@ -5,7 +5,7 @@
       <navigation></navigation>
       <div class="well logged-in" *ngIf="loggedIn()">
         Logged in as <b>{{ authService.getUsername() }}</b>
-        <a href class="link logout-link" (click)="logout()">Log out</a>
+        <button class="btn btn-light link logout-link" (click)="logout()">Log out</button>
       </div>
       <router-outlet name="signin"></router-outlet>
   </header>
