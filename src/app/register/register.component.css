@@ -67,3 +67,7 @@
 .register-form input {
     width: 240px;
 }
+
+.alert-danger {
+    margin-top: 1em;
+}

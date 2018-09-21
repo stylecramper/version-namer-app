@@ -14,13 +14,11 @@ export class AuthService {
     this.user = { name: '', token: '' };
   }
 
-  register(userData: object) {
-    const registerResult: Observable<any> = this.http.post('api/users', userData)
-      .map((response) => { /* return response.json(); */ })
-      .catch((e) => {
-        return Observable.throw(new Error(`${ e.status } ${ e.statusText }`));
+  register(userData: object): Observable<any> {
+    return this.http.post('api/users', userData)
+      .catch((err) => {
+        return Observable.throw(new Error(err.error.message));
       });
-    return registerResult;
   }
 
   login(email: string, password: string): Observable<any> {

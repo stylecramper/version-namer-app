@@ -47,8 +47,8 @@
         type="submit"
         class="btn btn-primary">Register Me</button>
     </form>
-    <div class="alert alert-danger" role="alert" *ngIf="message">
-      {{ message }}
+    <div class="alert alert-danger" role="alert" *ngIf="errorMessage">
+      {{ errorMessage }}
     </div>
   </div>
   <div class="success-container" *ngIf="registrationState===successValue">

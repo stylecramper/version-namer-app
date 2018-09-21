@@ -16,6 +16,7 @@ export class RegisterComponent implements OnInit {
   password: AbstractControl;
   strongRegularExp: RegExp;
   mediumRegularExp: RegExp;
+  errorMessage = '';
   loading = false;
   private registrationState: null | string;
   private successValue = 'success';
@@ -51,11 +52,15 @@ export class RegisterComponent implements OnInit {
   register(form) {
     this.loading = true;
     this.authService.register(form.value)
-      .subscribe((res) => {
+      .subscribe((response) => {
         this.loading = false;
-        if (res.code === this.successValue) {
+        if (response.code === this.successValue) {
           this.registrationState = this.successValue;
         }
+      }, () => {
+        this.loading = false;
+        this.errorMessage = 'Apologies - something went wrong. Please try again later.';
+        window.scrollTo(0,document.body.scrollHeight);
       });
   }
 

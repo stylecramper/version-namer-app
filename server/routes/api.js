@@ -55,7 +55,6 @@ const UserSchema = new Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     salt: { type: String, required: true },
-    token: String,
     projects: [ObjectId],
     created_at: Date,
     updated_at: Date
@@ -292,17 +291,20 @@ router.post('/users', (req, res) => {
         email: req.body.email,
         password: hash,
         salt: newSalt,
-        token: null,
         projects: [],
         created_at: new Date(),
         updated_at: new Date()
     });
     user.save((err) => {console.log('### err', err);
         if (err) {
-            res.json(JSON.stringify({ code: 'error' }));
-        } else {
-            res.json(JSON.stringify({ code: 'success', user: user._id }));
+            res
+                .status(500)
+                .json({ code: 'error', message: 'generic_error' });
+            return;
         }
+        res
+            .status(200)
+            .json({ code: 'success', user: user._id });
     });
 });
 
