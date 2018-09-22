@@ -1,7 +1,10 @@
 <div *ngIf="isLoggedIn">
-  <section class="projects empty" *ngIf="!hasProjects()">
+  <section class="projects empty" *ngIf="!hasProjects() && !errorState()">
     <h3>You don't have any projects yet.</h3>
   </section>
+  <div class="alert alert-danger" role="alert" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
 
   <section class="projects" *ngIf="hasProjects()">
     <h3>My Projects</h3>

@@ -92,6 +92,12 @@ mongodb.MongoClient.connect('mongodb://localhost:27017/VERSION_NAMES', function(
 router.get('/projects', jwtCheck, (req, res) => {
     // TODO: deal with user not being found?
     User.findById(req.user.id, 'projects').exec((err, docs) => {
+        if (err) {
+            res
+                .status(401)
+                .json({ code: 'error', message: 'user_not_found' });
+            return;
+        }
         Project.find({
             '_id': { $in: docs.projects }
         }, (err, userProjects) => {
@@ -99,7 +105,9 @@ router.get('/projects', jwtCheck, (req, res) => {
 
             if (err) {
                 console.log('Projects fetching error: ', err);
-                res.status(200).json(JSON.stringify({ code: 'error' }));
+                res
+                    .status(500)
+                    .json({ code: 'error', message: 'cannot_get_projects' });
                 return;
             }
             projectsList = userProjects.map((project) => {
@@ -110,8 +118,8 @@ router.get('/projects', jwtCheck, (req, res) => {
                 };
             });
             res
-            .status(200)
-            .json(JSON.stringify({ code: 'success', projects: projectsList }));
+                .status(200)
+                .json({ code: 'success', projects: projectsList });
         });
     });
 });

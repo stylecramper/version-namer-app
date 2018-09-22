@@ -10,3 +10,9 @@
     margin-top: 1em;
     padding: 0.5em;
 }
+
+.alert-danger {
+    margin-top: 1em;
+    min-width: 300px;
+    width: 50%;
+}

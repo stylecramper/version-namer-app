@@ -1,5 +1,5 @@
 import { Injectable, OnInit } from '@angular/core';
-import { Headers, Http } from '@angular/http';
+import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -14,7 +14,7 @@ export class ProjectsService implements OnInit {
     private projects: Array<ProjectType> = [];
     private versionNames: any = {};
 
-    constructor(private authService: AuthService, private http: Http) { }
+    constructor(private authService: AuthService, private http: HttpClient) { }
 
     ngOnInit() {
         this.fetchProjects()
@@ -30,12 +30,11 @@ export class ProjectsService implements OnInit {
             return Observable.throw(new Error('no-login'));
         }
         if (this.projects.length === 0) {
-            const headers = new Headers();
-            headers.append('Authorization', 'Bearer ' + this.authService.getUser().token);
+            const headers = new HttpHeaders()
+                .set('Authorization', 'Bearer ' + this.authService.getUser().token);
             projectsResult = this.http.get('api/projects', {headers: headers})
-                .map(response => response.json())
-                .catch((e) => {
-                    return Observable.throw(new Error(`${ e.status } ${ e.statusText }`));
+                .catch((err) => {
+                    return Observable.throw(new Error(err.error.message));
                 });
         } else {
             projectsResult = Observable.of({code: 'success', projects: this.projects});

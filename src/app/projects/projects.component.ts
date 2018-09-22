@@ -16,7 +16,17 @@ export class ProjectsComponent implements OnInit {
   private isLoggedIn: boolean;
   private projects: Array<ProjectType> = [];
   private projectsFetched = false;
-  private loading = false;
+  private loading;
+  private errorMessage = '';
+  private ERROR_TYPES: any = {
+    USER: 'user_not_found',
+    PROJECTS: 'cannot_get_projects'
+  };
+  private ERROR_MESSAGES: any = {
+    USER: 'We couldn\'t find that user. Try logging out and back in.',
+    PROJECTS: 'An error occurred while retrieving your projects. Please try again later.',
+    GENERIC: 'Sorry, some random weird thing happened. Please try again later.'
+  };
 
   constructor(
     private authService: AuthService,
@@ -25,6 +35,7 @@ export class ProjectsComponent implements OnInit {
     public confirmDialog: MatDialog,
     public snackBar: MatSnackBar
   ) { 
+    this.loading = false;
     this.authService.getLoggedInStatus
       .subscribe(status => this.changeLoggedInStatus(status));
   }
@@ -49,6 +60,10 @@ export class ProjectsComponent implements OnInit {
     return Array.isArray(this.projects) && this.projects.length > 0;
   }
 
+  errorState() {
+    return this.errorMessage !== '';
+  }
+
   fetchProjects() {
     this.loading = true;
     this.projectsService.fetchProjects()
@@ -57,6 +72,20 @@ export class ProjectsComponent implements OnInit {
           this.loading = false;
           this.projects = this.projects.concat(data.projects);
           this.projectsService.setProjects(this.projects);
+        }, (err) => {
+          this.loading = false;
+          switch (err.message) {
+            case this.ERROR_TYPES.USER:
+              this.errorMessage = this.ERROR_MESSAGES.USER;
+              break;
+            case this.ERROR_TYPES.PROJECTS:
+              this.errorMessage = this.ERROR_MESSAGES.PROJECTS;
+              break;
+            default:
+              this.errorMessage = this.ERROR_MESSAGES.GENERIC;
+              break;
+          }
+
         });
   }
 
