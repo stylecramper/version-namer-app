@@ -138,12 +138,21 @@ router.post('/projects', jwtCheck, (req, res) => {
                 userfound.projects = userfound.projects.concat([proj._id]);
                 userfound.save((err) => {console.log('### user save error', err);
                     if (err) {
-                        res.status(200).json(JSON.stringify({ code: 'error' }));
-                    } else {
-                        res.status(200).json(JSON.stringify({ code: 'success', project: { id: proj._id, name: proj.project_name, current_version_name: null } }));
+                        res
+                            .status(500)
+                            .json({ code: 'error', message: 'cannot_save_user' });
+                        return;
                     }
+                    res
+                        .status(200)
+                        .json({ code: 'success', project: { id: proj._id, name: proj.project_name, current_version_name: null } });
                 });
             });
+        })
+        .catch((err) => {
+            res
+                .status(500)
+                .json({ code: 'error', message: 'cannot_create_project' });
         });
 });
 

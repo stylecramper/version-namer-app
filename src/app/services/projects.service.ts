@@ -27,7 +27,7 @@ export class ProjectsService implements OnInit {
         let projectsResult: Observable<any>;
 
         if (!this.authService.isLoggedIn()) {
-            return Observable.throw(new Error('no-login'));
+            return Observable.throw(new Error('no_login'));
         }
         if (this.projects.length === 0) {
             const headers = new HttpHeaders()
@@ -43,18 +43,20 @@ export class ProjectsService implements OnInit {
     }
 
     createProject(project: object): Observable<any> {
+        let projectResult: Observable<any>;
+
         if (!this.authService.isLoggedIn()) {
             return Observable.throw(new Error('no-login'));
         }
-        const headers = new Headers();
-        headers.append('Authorization', 'Bearer ' + this.authService.getUser().token);
-        const projectResult: Observable<any> = this.http.post('api/projects', {project: project}, {headers: headers})
+        const headers = new HttpHeaders()
+            .set('Authorization', 'Bearer ' + this.authService.getUser().token);
+        projectResult = this.http.post('api/projects', {project: project}, {headers: headers})
             .map((response) => {
                 this.versionNames = [];
-                return response.json();
+                return response;
             })
-            .catch((e) => {
-                return Observable.throw(new Error(`${ e.status } ${ e.statusText }`));
+            .catch((err) => {
+                return Observable.throw(new Error(err.error.message));
             });
         return projectResult;
     }
@@ -63,14 +65,11 @@ export class ProjectsService implements OnInit {
         if (!this.authService.isLoggedIn()) {
             return Observable.throw(new Error('no-login'));
         }
-        const headers = new Headers();
-        headers.append('Authorization', 'Bearer ' + this.authService.getUser().token);
+        const headers = new HttpHeaders()
+            .set('Authorization', 'Bearer ' + this.authService.getUser().token);
         const projectDeleteResult: Observable<any> = this.http.delete('api/projects/' + projectId, {headers: headers})
-            .map((response) => {
-                return response.json();
-            })
-            .catch((e) => {
-                return Observable.throw(new Error(`${ e.status } ${ e.statusText }`));
+            .catch((err) => {
+                return Observable.throw(new Error(err.error.message));
             });
         return projectDeleteResult;
     }
