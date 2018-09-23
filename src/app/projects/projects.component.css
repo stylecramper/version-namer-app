@@ -11,6 +11,10 @@
     padding: 0.5em;
 }
 
+.btn-danger {
+    margin-left: 0.5em;
+}
+
 .alert-danger {
     margin-top: 1em;
     min-width: 300px;

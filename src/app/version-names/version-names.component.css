@@ -82,3 +82,7 @@
 .names-list li.current-name {
     background-color: aquamarine;
 }
+
+.btn-danger {
+    margin-left: 0.5em;
+}
