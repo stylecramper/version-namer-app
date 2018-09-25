@@ -70,7 +70,7 @@ export class ProjectsComponent implements OnInit {
         .subscribe((data) => {
           this.projectsFetched = true;
           this.loading = false;
-          this.projects = this.projects.concat(data.projects);
+          this.projects = data.projects;
           this.projectsService.setProjects(this.projects);
         }, (err) => {
           this.loading = false;
