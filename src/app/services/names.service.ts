@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
@@ -12,12 +12,11 @@ import { Animal, Adjective, NamesType } from '../models/names.models';
 export class NamesService {
   private names: NamesType;
 
-  constructor(private http: Http) { }
+  constructor(private http: HttpClient) { }
 
   fetchNames() {
 
     const animals: Observable<Animal[]> = this.http.get('/api/animals')
-      .map(response => response.json())
       .map((objects: Array<any>) => {
         const animalsArray: Array<Animal> = [];
         if (objects) {
@@ -32,7 +31,6 @@ export class NamesService {
       });
 
     const adjectives: Observable<Adjective[]> = this.http.get('/api/adjectives')
-      .map(response => response.json())
       .map((objects: Array<any>) => {
         const adjectivesArray: Array<Adjective> = [];
         if (objects) {
