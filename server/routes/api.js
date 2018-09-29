@@ -229,26 +229,28 @@ router.get('/version-names/:id', jwtCheck, (req, res) => {
         if (err) {console.log('#### err', err.name + ', ' + err.kind);
             if (err.name === 'CastError' && err.kind === 'ObjectId') {
                 res
-                .status(200)
-                .json(JSON.stringify({ code: 'project_id_error' }));
-            } else {
-                res
-                .status(200)
-                .json(JSON.stringify({ code: 'generic_error' }));
+                .status(500)
+                .json({ code: 'error', message: 'project_not_found' });
+                return;
             }
-        } else {
-            ProjectVersionName.find({
-                '_id': { $in: docs.project_version_names }
-            }, null, { sort: 'created_at' }, (err, docs) => {
-                if (err) {
-                    res.status(200).json(JSON.stringify({ code: 'error' }));
-                } else {
-                    res
-                    .status(200)
-                    .json(JSON.stringify({ code: 'success', versionNames: docs }));
-                }
-            });
+            res
+            .status(500)
+            .json({ code: 'error', message: 'generic_error' });
+            return;
         }
+        ProjectVersionName.find({
+            '_id': { $in: docs.project_version_names }
+        }, null, { sort: 'created_at' }, (err, docs) => {
+            if (err) {
+                res
+                .status(500)
+                .json({ code: 'error', message: 'cannot_get_version_names' });
+                return;
+            }
+            res
+            .status(200)
+            .json({ code: 'success', versionNames: docs });
+        });
     });
 });
 

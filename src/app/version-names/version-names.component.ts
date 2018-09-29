@@ -67,6 +67,16 @@ export class VersionNamesComponent implements OnInit {
   animal: Animal;
   animationState: string;
   loading: boolean;
+  private errorMessage = '';
+  private ERROR_TYPES: any = {
+    PROJECT: 'project_not_found',
+    VERSION_NAMES: 'cannot_get_version_names'
+  };
+  private ERROR_MESSAGES: any = {
+    PROJECT: 'That project was not found.',
+    VERSION_NAMES: 'An error occurred while retrieving your project\'s version names. Please try again later.',
+    GENERIC: 'Sorry, some random weird thing happened. Please try again later.'
+  };
 
   constructor(
     private route: ActivatedRoute,
@@ -85,14 +95,21 @@ export class VersionNamesComponent implements OnInit {
     const projectId = this.route.snapshot.params['id'];
     this.project = this.projectsService.getProject(projectId);
     this.versionNamesService.fetchVersionNames(projectId)
-        .subscribe((data) => {console.log('## ngOnInit data', data);
-          if (data.code === 'project_id_error') {
-            this.error = 'projectId';
-          } else if (data.code === 'generic_error') {
-            this.error = 'generic';
-          } else {
-            this.loading = false;
-            this.versionNames = data.versionNames;
+        .subscribe((data) => {
+          this.loading = false;
+          this.versionNames = data.versionNames;
+        }, (err) => {
+          this.loading = false;
+          switch (err.message) {
+            case this.ERROR_TYPES.PROJECT:
+              this.errorMessage = this.ERROR_MESSAGES.PROJECT;
+              break;
+            case this.ERROR_TYPES.VERSION_NAMES:
+              this.errorMessage = this.ERROR_MESSAGES.VERSION_NAMES;
+              break;
+            default:
+              this.errorMessage = this.ERROR_MESSAGES.GENERIC;
+              break;
           }
         });
   }
