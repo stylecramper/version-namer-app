@@ -20,11 +20,17 @@ export class ProjectsComponent implements OnInit {
   private errorMessage = '';
   private ERROR_TYPES: any = {
     USER: 'user_not_found',
-    PROJECTS: 'cannot_get_projects'
+    PROJECTS_GET: 'cannot_get_projects',
+    PROJECT_NOT_FOUND: 'project_not_found',
+    CANNOT_DELETE_PROJECT: 'cannot_delete_project',
+    CANNOT_SAVE_USER: 'cannot_save_user'
   };
   private ERROR_MESSAGES: any = {
     USER: 'We couldn\'t find that user. Try logging out and back in.',
-    PROJECTS: 'An error occurred while retrieving your projects. Please try again later.',
+    PROJECTS_GET: 'An error occurred while retrieving your projects. Please try again later.',
+    PROJECT_NOT_FOUND: 'That project was not found.',
+    CANNOT_DELETE_PROJECT: 'An error occurred while attempting to delete this project. Please try again later.',
+    CANNOT_SAVE_USER: 'Saving your user data failed. You may continue to see this project in your list.',
     GENERIC: 'Sorry, some random weird thing happened. Please try again later.'
   };
 
@@ -34,7 +40,7 @@ export class ProjectsComponent implements OnInit {
     private router: Router,
     public confirmDialog: MatDialog,
     public snackBar: MatSnackBar
-  ) { 
+  ) {
     this.loading = false;
     this.authService.getLoggedInStatus
       .subscribe(status => this.changeLoggedInStatus(status));
@@ -78,8 +84,8 @@ export class ProjectsComponent implements OnInit {
             case this.ERROR_TYPES.USER:
               this.errorMessage = this.ERROR_MESSAGES.USER;
               break;
-            case this.ERROR_TYPES.PROJECTS:
-              this.errorMessage = this.ERROR_MESSAGES.PROJECTS;
+            case this.ERROR_TYPES.PROJECTS_GET:
+              this.errorMessage = this.ERROR_MESSAGES.PROJECTS_GET;
               break;
             default:
               this.errorMessage = this.ERROR_MESSAGES.GENERIC;
@@ -105,8 +111,28 @@ export class ProjectsComponent implements OnInit {
             return proj.id !== data.projectId;
           });
           this.projectsService.setProjects(this.projects);
-        } else {
-          // TODO: error handling
+        }
+      }, (err) => {
+        this.loading = false;
+        switch (err.message) {
+          case this.ERROR_TYPES.USER:
+            this.errorMessage = this.ERROR_MESSAGES.USER;
+            break;
+          case this.ERROR_TYPES.PROJECTS_GET:
+            this.errorMessage = this.ERROR_MESSAGES.PROJECTS_GET;
+            break;
+          case this.ERROR_TYPES.PROJECT_NOT_FOUND:
+            this.errorMessage = this.ERROR_MESSAGES.PROJECT_NOT_FOUND;
+            break;
+          case this.ERROR_TYPES.CANNOT_DELETE_PROJECT:
+            this.errorMessage = this.ERROR_MESSAGES.CANNOT_DELETE_PROJECT;
+            break;
+          case this.ERROR_TYPES.CANNOT_SAVE_USER:
+            this.errorMessage = this.ERROR_MESSAGES.CANNOT_SAVE_USER;
+            break;
+          default:
+            this.errorMessage = this.ERROR_MESSAGES.GENERIC;
+            break;
         }
       });
   }

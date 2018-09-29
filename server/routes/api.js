@@ -10,6 +10,7 @@ const mongodb = require('mongodb');
 const SECRET_KEY = '998cf65a-1f0f-4325-81ea-315b08aec537';
 
 const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
 
@@ -19,8 +20,6 @@ app.use(bodyParser.json());
 const jwtCheck = expressjwt({
     secret: SECRET_KEY
 });
-
-let db;
 
 const AnimalSchema = new Schema({
     animal: String
@@ -84,6 +83,11 @@ mongodb.MongoClient.connect('mongodb://localhost:27017/VERSION_NAMES', function(
     console.info('Database connection ready');
 
 });
+
+function reflect(promise){
+    return promise.then(function(v){ return {value:v, status: 'resolved' }; },
+                        function(e){ return {err:e, status: 'rejected' }; });
+}
 
 /* ----------- ********* ------------
                 PROJECTS
@@ -158,55 +162,61 @@ router.post('/projects', jwtCheck, (req, res) => {
 
 router.delete('/projects/:id', jwtCheck, (req, res) => {
     console.log('DELETE project', req.params.id);
-    // TODO: improve error responses
+    let promises = [];
+
     Project.findById(req.params.id, 'project_name project_version_names').exec((err, docs) => {
         let error;
 
         if (err) {console.log('#### err', err.name + ', ' + err.kind);
             if (err.name === 'CastError' && err.kind === 'ObjectId') {
-                error = { code: 'project_id_error' };
+                error = { code: 'error', message: 'project_not_found' };
             } else {
-                error = { code: 'generic_error' };
+                error = { code: 'error', message: 'generic_error' };
             }
-        } else {
-            ProjectVersionName.find({
-                '_id': { $in: docs.project_version_names }
-            }, (err, docs) => {
-                if (err) {
-                    error = { code: 'error' };
-                } else {
-                    docs.map((name) => {console.log('#### deleting name', name._id);
-                        ProjectVersionName.findByIdAndRemove(name._id, (err, name) => {
-                            if (err) {
-                                error = { code: 'version_name_deletion_error' };
-                            }
-                        });
-                    });
-                    Project.findByIdAndRemove(req.params.id, (err, project) => {
-                        if (err) {
-                            error = { code: 'project_deletion_error' };
-                        }
-                    });
-                    User.findById(req.user.id).then((userfound) => {
-                        userfound.projects = userfound.projects.filter((project) => {
-                            return project.toString() !== req.params.id;
-                        });
-                        userfound.save((err) => {
-                            if (err) {
-                                error = { code: 'user_save_error' };
-                            }
-                        });
-                    });
-                }
-            });
-        }
-        if (error) {
             res
-                .status(200)
-                .json(JSON.stringify(error));
+                .status(500)
+                .json(error);
             return;
         }
-        res.status(200).json(JSON.stringify({ code: 'success', projectId: req.params.id, projectName: docs.project_name }));
+        promises.push(ProjectVersionName.find({
+            '_id': { $in: docs.project_version_names }
+        }).exec((err, docs) => {
+            docs.map((name) => {console.log('#### deleting name', name._id);
+                ProjectVersionName.findByIdAndRemove(name._id, (err, name) => {
+                    // not critical error if project's version names are not deleted
+                });
+            });
+        }));
+        promises.push(Project.findByIdAndRemove(req.params.id).exec());
+        promises.push(User.findById(req.user.id).exec((err, userfound) => {
+            if (!err) {
+                userfound.projects = userfound.projects.filter((project) => {
+                    return project.toString() !== req.params.id;
+                });
+                userfound.save();
+            }
+        }));
+        Promise.all(promises.map(reflect)).then(function(results){
+            if (results[0].status === 'rejected') {
+                console.log('### ProjectVersionName.find err', results[0].err);
+                error = { code: 'error', message: 'cannot_find_version_names' };
+                res.status(500).json(error);
+                return;
+            }
+            if (results[1].status === 'rejected') {
+                console.log('Project.findByIdAndRemove err', results[1].err);
+                error = { code: 'error', message: 'cannot_delete_project' };
+                res.status(500).json(error);
+                return;
+            }
+            if (results[2].status === 'rejected') {
+                console.log('### User.findById err', results[2].err);
+                error = { code: 'error', message: 'user_not_found' };
+                res.status(500).json(error);
+                return;
+            }
+            res.status(200).json({ code: 'success', projectId: req.params.id, projectName: docs.project_name });
+        });
     });
 });
 
@@ -260,7 +270,7 @@ router.post('/version-names/:id', jwtCheck, (req, res) => {
                     } else {
                         res.status(200).json(JSON.stringify({ code: 'success', versionName: { id: pvn._id, adjective: pvn.adjective, animal: pvn.animal } }));
                     }
-                })
+                });
             });
         });
 });
