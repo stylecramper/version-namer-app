@@ -27,7 +27,7 @@ export class VersionNamesService {
             const headers = new HttpHeaders()
                 .set('Authorization', 'Bearer ' + this.authService.getUser().token);
             versionNamesResult = this.http.get('api/version-names/' + projectId, {headers: headers})
-                .map((response: any) => {console.log('#### fetchVersionNames response', response);
+                .map((response: any) => {
                     response.versionNames = response.versionNames.map(this.mapVersionName);
                     this.versionNames[projectId] = response.versionNames;
                     return response;

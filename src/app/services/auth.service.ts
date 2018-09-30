@@ -28,10 +28,6 @@ export class AuthService {
       });
   }
 
-  logout(): void {
-    this.user.token = '';
-  }
-
   getUser(): UserType {
     return {name: localStorage.getItem('username'), token: localStorage.getItem('usertoken')};
   }
@@ -48,6 +44,14 @@ export class AuthService {
     if (this.user.token) {
       this.getLoggedInStatus.emit(true);
     }
+  }
+
+  unsetUser(): void {
+    this.user.name = '';
+    this.user.token = '';
+    localStorage.removeItem('username');
+    localStorage.removeItem('usertoken');
+    this.getLoggedInStatus.emit(false);
   }
 
   isLoggedIn(): boolean {

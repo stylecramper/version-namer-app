@@ -3,6 +3,7 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatDialogConfig, MatSnackBar } from '@angular/material';
 
+import { AuthService } from './../services/auth.service';
 import { NamesService } from './../services/names.service';
 import { Animal, Adjective } from '../models/names.models';
 import { ProjectsService } from './../services/projects.service';
@@ -88,6 +89,7 @@ export class VersionNamesComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private authService: AuthService,
     private namesService: NamesService,
     private projectsService: ProjectsService,
     private versionNamesService: VersionNamesService,
@@ -95,6 +97,8 @@ export class VersionNamesComponent implements OnInit {
     public snackBar: MatSnackBar
   ) {
     this.animationState = 'inactive';
+    this.authService.getLoggedInStatus
+      .subscribe(status => this.changeLoggedInStatus(status));
   }
 
   ngOnInit() {
@@ -255,6 +259,12 @@ export class VersionNamesComponent implements OnInit {
 
   isCurrentVersionName(versionName: VersionNameType): boolean {
     return this.project.current_version_name === null || versionName.id === this.project.current_version_name
+  }
+
+  changeLoggedInStatus(stauts: boolean): void {
+    if (!status) {
+      this.versionNames = [];
+    }
   }
 
 }

@@ -18,8 +18,7 @@ export class AppComponent {
   }
 
   logout(): void {
-    localStorage.removeItem('username');
-    localStorage.removeItem('usertoken');
+    this.authService.unsetUser();
     this.router.navigate(['/home', { outlets: { signin: null }}]);
   }
 }

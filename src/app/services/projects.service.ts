@@ -12,7 +12,6 @@ import { ProjectType,
 @Injectable()
 export class ProjectsService implements OnInit {
     private projects: Array<ProjectType> = [];
-    private versionNames: any = {};
 
     constructor(private authService: AuthService, private http: HttpClient) { }
 
@@ -50,15 +49,10 @@ export class ProjectsService implements OnInit {
         }
         const headers = new HttpHeaders()
             .set('Authorization', 'Bearer ' + this.authService.getUser().token);
-        projectResult = this.http.post('api/projects', {project: project}, {headers: headers})
-            .map((response) => {
-                this.versionNames = [];
-                return response;
-            })
+        return this.http.post('api/projects', {project: project}, {headers: headers})
             .catch((err) => {
                 return Observable.throw(new Error(err.error.message));
             });
-        return projectResult;
     }
 
     deleteProject(projectId: string): Observable<any> {

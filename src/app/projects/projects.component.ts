@@ -55,6 +55,10 @@ export class ProjectsComponent implements OnInit {
 
   changeLoggedInStatus(status: boolean): void {
     this.isLoggedIn = status;
+    if (!status) {
+      this.projects = [];
+      return;
+    }
     this.fetchProjects();
   }
 
