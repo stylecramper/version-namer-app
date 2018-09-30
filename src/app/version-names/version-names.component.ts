@@ -68,13 +68,18 @@ export class VersionNamesComponent implements OnInit {
   animationState: string;
   loading: boolean;
   private errorMessage = '';
+  private successValue = 'success';
   private ERROR_TYPES: any = {
     PROJECT: 'project_not_found',
-    VERSION_NAMES: 'cannot_get_version_names'
+    PROJECT_SAVE: 'cannot_save_project',
+    VERSION_NAMES: 'cannot_get_version_names',
+    VERSION_NAME_CREATE: 'cannot_create_version_name'
   };
   private ERROR_MESSAGES: any = {
     PROJECT: 'That project was not found.',
+    PROJECT_SAVE: 'An error occurred while saving this project. Please try again later.',
     VERSION_NAMES: 'An error occurred while retrieving your project\'s version names. Please try again later.',
+    VERSION_NAME_CREATE: 'An error occurred while saving this version name. Please try again later.',
     GENERIC: 'Sorry, some random weird thing happened. Please try again later.'
   };
 
@@ -155,14 +160,29 @@ export class VersionNamesComponent implements OnInit {
     this.loading = true;
     const payload = { animal: this.animal, adjective: this.adjective };
     this.versionNamesService.saveVersionName(this.project.id, payload)
-      .subscribe((data) => {console.log('#### saveVersionName data', data);
-          if (data.code === 'success') {
+      .subscribe((data) => {
+          if (data.code === this.successValue) {
             this.loading = false;
             this.project.current_version_name = data.versionName.id;
             this.closeDashboard();
-          } else {
-            // TODO: error handling
           }
+      }, (err) => {
+        this.loading = false;
+        this.closeDashboard();
+        switch (err.message) {
+          case this.ERROR_TYPES.PROJECT_SAVE:
+            this.errorMessage = this.ERROR_MESSAGES.PROJECT_SAVE;
+            break;
+          case this.ERROR_TYPES.PROJECT:
+            this.errorMessage = this.ERROR_MESSAGES.PROJECT;
+            break;
+          case this.ERROR_TYPES.VERSION_NAME_CREATE:
+            this.errorMessage = this.ERROR_MESSAGES.VERSION_NAME_CREATE;
+            break;
+          default: 
+            this.errorMessage = this.ERROR_MESSAGES.GENERIC;
+            break;
+        }
       });
   }
 

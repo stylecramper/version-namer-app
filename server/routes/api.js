@@ -32,8 +32,8 @@ const AdjectiveSchema = new Schema({
 const Adjective = mongoose.model('Adjective', AdjectiveSchema);
 
 const ProjectVersionNameSchema = new Schema({
-    adjective: String,
-    animal: String,
+    adjective: { type: String, required: true },
+    animal:  { type: String, required: true },
     created_at: Date,
     updated_at: Date
 });
@@ -268,12 +268,24 @@ router.post('/version-names/:id', jwtCheck, (req, res) => {
                 projectfound.current_project_version_name = pvn._id;
                 projectfound.save((err) => {console.log('### project save error', err);
                     if (err) {
-                        res.status(200).json(JSON.stringify({ code: 'error' }));
-                    } else {
-                        res.status(200).json(JSON.stringify({ code: 'success', versionName: { id: pvn._id, adjective: pvn.adjective, animal: pvn.animal } }));
+                        res
+                        .status(500)
+                        .json({ code: 'error', message: 'cannot_save_project' });
+                        return;
                     }
+                    res
+                    .status(200)
+                    .json({ code: 'success', versionName: { id: pvn._id, adjective: pvn.adjective, animal: pvn.animal } });
                 });
+            }, (err) => {
+                res
+                .status(500)
+                .json({ code: 'error', message: 'project_not_found' });
             });
+        }, (err) => {
+            res
+            .status(500)
+            .json({ code: 'error', message: 'cannot_create_version_name' });
         });
 });
 

@@ -49,17 +49,16 @@ export class VersionNamesService {
         const headers = new HttpHeaders()
             .set('Authorization', 'Bearer ' + this.authService.getUser().token);
         const versionNameResult: Observable<any> = this.http.post('api/version-names/' + projectId, {versionName: versionName}, {headers: headers})
-            .map((response) => {
-                /* const responseJson = response.json();console.log('#### responseJson', responseJson);
-                this.projectsService.updateProjectVersionName(projectId, responseJson.versionName.id);
+            .map((response: any) => {
+                this.projectsService.updateProjectVersionName(projectId, response.versionName.id);
                 if (!this.versionNames.hasOwnProperty(projectId)) {
                     this.versionNames[projectId] = [];
                 }
-                this.versionNames[projectId].push(responseJson.versionName);
-                return responseJson; */
+                this.versionNames[projectId].push(response.versionName);
+                return response;
             })
-            .catch((e) => {console.log('### createVersionName error', e);
-                return Observable.throw(new Error(`${ e.status } ${ e.statusText }`));
+            .catch((err) => {console.log('### createVersionName error', err);
+                return Observable.throw(new Error(err.error.message));
             });
         return versionNameResult;
     }
