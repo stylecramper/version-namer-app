@@ -296,8 +296,8 @@ router.delete('/version-names/:id', jwtCheck, (req, res) => {
     ProjectVersionName.findByIdAndRemove(req.params.id, (err, docs) => {
         if (err) {
             res
-                .status(200)
-                .json(JSON.stringify({code: 'version_name_deletion_error'}));
+                .status(500)
+                .json({ code: 'error', message: 'cannot_delete_version_name' });
             return;
         }
         Project.findById(req.query.project).then((projectfound) => {
@@ -310,11 +310,19 @@ router.delete('/version-names/:id', jwtCheck, (req, res) => {
             }
             projectfound.save((err) => {
                 if (err) {
-                    res.status(200).json(JSON.stringify({ code: 'save_project_error' }));
-                } else {
-                    res.status(200).json(JSON.stringify({ code: 'success', versionNameId: req.params.id, versionName: `${docs.adjective} ${docs.animal}` }));
+                    res
+                    .status(500)
+                    .json({ code: 'error', message: 'cannot_save_project' });
+                    return;
                 }
+                res
+                .status(200)
+                .json({ code: 'success', versionNameId: req.params.id, versionName: `${docs.adjective} ${docs.animal}` });
             });
+        }, (err) => {
+            res
+            .status(500)
+            .json({ code: 'error', message: 'project_not_found' });
         });
     });
 });

@@ -73,13 +73,15 @@ export class VersionNamesComponent implements OnInit {
     PROJECT: 'project_not_found',
     PROJECT_SAVE: 'cannot_save_project',
     VERSION_NAMES: 'cannot_get_version_names',
-    VERSION_NAME_CREATE: 'cannot_create_version_name'
+    VERSION_NAME_CREATE: 'cannot_create_version_name',
+    VERSION_NAME_DELETE: 'cannot_delete_version_name'
   };
   private ERROR_MESSAGES: any = {
     PROJECT: 'That project was not found.',
     PROJECT_SAVE: 'An error occurred while saving this project. Please try again later.',
     VERSION_NAMES: 'An error occurred while retrieving your project\'s version names. Please try again later.',
     VERSION_NAME_CREATE: 'An error occurred while saving this version name. Please try again later.',
+    VERSION_NAME_DELETE: 'An error occurred while attempting to delete this project. Please try again later.',
     GENERIC: 'Sorry, some random weird thing happened. Please try again later.'
   };
 
@@ -201,6 +203,22 @@ export class VersionNamesComponent implements OnInit {
               this.project.current_version_name = this.versionNames[this.versionNames.length - 1].id;
             }
             this.versionNamesService.setVersionNames(this.versionNames);
+          }
+        }, (err) => {
+          this.loading = false;
+          switch(err.message) {
+            case this.ERROR_TYPES.VERSION_NAME_DELETE:
+              this.errorMessage = this.ERROR_MESSAGES.VERSION_NAME_DELETE;
+              break;
+            case this.ERROR_TYPES.PROJECT_SAVE:
+              this.errorMessage = this.ERROR_MESSAGES.PROJECT_SAVE;
+              break;
+            case this.ERROR_TYPES.PROJECT:
+              this.errorMessage = this.ERROR_MESSAGES.PROJECT;
+              break;
+            default:
+              this.errorMessage = this.ERROR_MESSAGES.GENERIC;
+              break;
           }
         });
   }
