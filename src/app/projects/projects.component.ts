@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { MatDialog, MatDialogConfig, MatSnackBar } from '@angular/material';
 
 import { AuthService } from '../services/auth.service';
+import { ErrorsService } from './../services/errors.service';
 import { ProjectsService } from './../services/projects.service';
 import { ProjectType } from '../types/project-types';
 import { ConfirmDialogComponent } from './../common/confirm-dialog/confirm-dialog.component';
@@ -36,6 +37,7 @@ export class ProjectsComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
+    private errorsService: ErrorsService,
     private projectsService: ProjectsService,
     private router: Router,
     public confirmDialog: MatDialog,
@@ -84,18 +86,7 @@ export class ProjectsComponent implements OnInit {
           this.projectsService.setProjects(this.projects);
         }, (err) => {
           this.loading = false;
-          switch (err.message) {
-            case this.ERROR_TYPES.USER:
-              this.errorMessage = this.ERROR_MESSAGES.USER;
-              break;
-            case this.ERROR_TYPES.PROJECTS_GET:
-              this.errorMessage = this.ERROR_MESSAGES.PROJECTS_GET;
-              break;
-            default:
-              this.errorMessage = this.ERROR_MESSAGES.GENERIC;
-              break;
-          }
-
+          this.errorMessage = this.errorsService.getErrorMessage(err.message);
         });
   }
 

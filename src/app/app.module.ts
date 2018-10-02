@@ -16,6 +16,7 @@ import { NamesService } from './services/names.service';
 import { AuthService } from './services/auth.service';
 import { ProjectsService } from './services/projects.service';
 import { VersionNamesService } from './services/version-names.service';
+import { ErrorsService } from './services/errors.service';
 import { SignInComponent } from './sign-in/sign-in.component';
 import { RegisterComponent } from './register/register.component';
 import { ProjectsComponent } from './projects/projects.component';
@@ -85,7 +86,13 @@ const ROUTES = [
   entryComponents: [
     ConfirmDialogComponent
   ],
-  providers: [NamesService, AuthService, ProjectsService, VersionNamesService],
+  providers: [
+    NamesService,
+    AuthService,
+    ProjectsService,
+    VersionNamesService,
+    ErrorsService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
