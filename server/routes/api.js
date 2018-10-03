@@ -144,13 +144,18 @@ router.post('/projects', jwtCheck, (req, res) => {
                     if (err) {
                         res
                             .status(500)
-                            .json({ code: 'error', message: 'cannot_save_user' });
+                            .json({ code: 'error', message: 'create_project_cannot_save_user' });
                         return;
                     }
                     res
                         .status(200)
                         .json({ code: 'success', project: { id: proj._id, name: proj.project_name, current_version_name: null } });
                 });
+            })
+            .catch((err) => {
+                res
+                .status(500)
+                .json({ code: 'error', message: 'user_not_found' });
             });
         })
         .catch((err) => {

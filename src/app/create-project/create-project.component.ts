@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { AuthService } from '../services/auth.service';
 import { ProjectsService } from './../services/projects.service';
+import { ErrorsService } from './../services/errors.service';
 
 @Component({
   selector: 'app-create-project',
@@ -17,20 +18,12 @@ export class CreateProjectComponent implements OnInit {
   private projectCreationState = 'precreate'; // 'success'
   private loading: boolean;
   private errorMessage = '';
-  private ERROR_TYPES: any = {
-    USER: 'cannot_save_user',
-    PROJECT: 'cannot_create_project'
-  };
-  private ERROR_MESSAGES: any = {
-    USER: 'We couldn\'t save your user data. Please try again later.',
-    PROJECT: 'An error occurred while saving this project. Please try again later.',
-    GENERIC: 'Sorry, some random weird thing happened. Please try again later.'
-  };
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private projectsService: ProjectsService,
+    private errorsService: ErrorsService,
     private router: Router
   ) {
     this.authService.getLoggedInStatus
@@ -64,17 +57,7 @@ export class CreateProjectComponent implements OnInit {
         }
       }, (err) => {
         this.loading = false;
-        switch (err.message) {
-          case this.ERROR_TYPES.USER:
-              this.errorMessage = this.ERROR_MESSAGES.USER;
-              break;
-            case this.ERROR_TYPES.PROJECT:
-              this.errorMessage = this.ERROR_MESSAGES.PROJECT;
-              break;
-            default:
-              this.errorMessage = this.ERROR_MESSAGES.GENERIC;
-              break;
-        }
+        this.errorMessage = this.errorsService.getErrorMessage(err.message);
       });
   }
 

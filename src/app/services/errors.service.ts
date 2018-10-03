@@ -10,15 +10,17 @@ export class ErrorsService {
             USER: 'user_not_found',
             PROJECTS_GET: 'cannot_get_projects',
             PROJECT_NOT_FOUND: 'project_not_found',
+            CANNOT_CREATE_PROJECT: 'cannot_create_project',
             CANNOT_DELETE_PROJECT: 'cannot_delete_project',
-            CANNOT_SAVE_USER: 'cannot_save_user'
+            CANNOT_SAVE_USER_ON_PROJECT_CREATE: 'create_project_cannot_save_user'
         };
         this.ERROR_MESSAGES = {
             USER: 'We couldn\'t find that user. Try logging out and back in.',
             PROJECTS_GET: 'An error occurred while retrieving your projects. Please try again later.',
             PROJECT_NOT_FOUND: 'That project was not found.',
+            CANNOT_CREATE_PROJECT: 'An error occurred while saving this project. Please try again later.',
             CANNOT_DELETE_PROJECT: 'An error occurred while attempting to delete this project. Please try again later.',
-            CANNOT_SAVE_USER: 'Saving your user data failed. You may continue to see this project in your list.',
+            CANNOT_SAVE_USER_ON_PROJECT_CREATE: 'Saving your user data failed. You may not see this project in your list.',
             GENERIC: 'Sorry, some random weird thing happened. Please try again later.'
         };
     }
