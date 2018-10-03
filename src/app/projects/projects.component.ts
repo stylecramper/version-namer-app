@@ -109,26 +109,7 @@ export class ProjectsComponent implements OnInit {
         }
       }, (err) => {
         this.loading = false;
-        switch (err.message) {
-          case this.ERROR_TYPES.USER:
-            this.errorMessage = this.ERROR_MESSAGES.USER;
-            break;
-          case this.ERROR_TYPES.PROJECTS_GET:
-            this.errorMessage = this.ERROR_MESSAGES.PROJECTS_GET;
-            break;
-          case this.ERROR_TYPES.PROJECT_NOT_FOUND:
-            this.errorMessage = this.ERROR_MESSAGES.PROJECT_NOT_FOUND;
-            break;
-          case this.ERROR_TYPES.CANNOT_DELETE_PROJECT:
-            this.errorMessage = this.ERROR_MESSAGES.CANNOT_DELETE_PROJECT;
-            break;
-          case this.ERROR_TYPES.CANNOT_SAVE_USER:
-            this.errorMessage = this.ERROR_MESSAGES.CANNOT_SAVE_USER;
-            break;
-          default:
-            this.errorMessage = this.ERROR_MESSAGES.GENERIC;
-            break;
-        }
+        this.errorMessage = this.errorsService.getErrorMessage(err.message);
       });
   }
 

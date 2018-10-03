@@ -202,12 +202,6 @@ router.delete('/projects/:id', jwtCheck, (req, res) => {
             }
         }));
         Promise.all(promises.map(reflect)).then(function(results){
-            if (results[0].status === 'rejected') {
-                console.log('### ProjectVersionName.find err', results[0].err);
-                error = { code: 'error', message: 'cannot_find_version_names' };
-                res.status(500).json(error);
-                return;
-            }
             if (results[1].status === 'rejected') {
                 console.log('Project.findByIdAndRemove err', results[1].err);
                 error = { code: 'error', message: 'cannot_delete_project' };
