@@ -2,38 +2,22 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class ErrorsService {
-    private ERROR_TYPES: any;
-    private ERROR_MESSAGES: any;
+    private ERROR_MAP: any;
 
     constructor() {
-        this.ERROR_TYPES = {
-            USER: 'user_not_found',
-            PROJECTS_GET: 'cannot_get_projects',
-            PROJECT_NOT_FOUND: 'project_not_found',
-            CANNOT_CREATE_PROJECT: 'cannot_create_project',
-            CANNOT_DELETE_PROJECT: 'cannot_delete_project',
-            CANNOT_SAVE_USER_ON_PROJECT_CREATE: 'create_project_cannot_save_user'
-        };
-        this.ERROR_MESSAGES = {
-            USER: 'We couldn\'t find that user. Try logging out and back in.',
-            PROJECTS_GET: 'An error occurred while retrieving your projects. Please try again later.',
-            PROJECT_NOT_FOUND: 'That project was not found.',
-            CANNOT_CREATE_PROJECT: 'An error occurred while saving this project. Please try again later.',
-            CANNOT_DELETE_PROJECT: 'An error occurred while attempting to delete this project. Please try again later.',
-            CANNOT_SAVE_USER_ON_PROJECT_CREATE: 'Saving your user data failed. You may not see this project in your list.',
-            GENERIC: 'Sorry, some random weird thing happened. Please try again later.'
+        this.ERROR_MAP = {
+            'user_not_found':                   'We couldn\'t find that user. Try logging out and back in.',
+            'cannot_get_projects':              'An error occurred while retrieving your projects. Please try again later.',
+            'project_not_found':                'That project was not found.',
+            'cannot_create_project':            'An error occurred while saving this project. Please try again later.',
+            'cannot_delete_project':            'An error occurred while attempting to delete this project. Please try again later.',
+            'create_project_cannot_save_user':  'Saving your user data failed. You may not see this project in your list.',
+            'generic':                          'Sorry, some random weird thing happened. Please try again later.'
         };
     }
 
     getErrorMessage(type: string): string {
-        let message;
-
-        for (const messageType in this.ERROR_TYPES) {
-            if (this.ERROR_TYPES[messageType] === type) {
-                message = this.ERROR_MESSAGES[messageType];
-            }
-        }
-        return (message) ? message: this.ERROR_MESSAGES.GENERIC;
+        return (this.ERROR_MAP[type]) ? this.ERROR_MAP[type]: this.ERROR_MAP['generic'];
     }
 
 }
