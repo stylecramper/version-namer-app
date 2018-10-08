@@ -7,7 +7,6 @@ const mongodb = require('mongodb');
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 const Schema = mongoose.Schema;
-const ObjectId = Schema.ObjectId;
 
 const app = express();
 app.use(bodyParser.json());
@@ -25,20 +24,11 @@ const AdjectiveSchema = new Schema({
 });
 const Adjective = mongoose.model('Adjective', AdjectiveSchema);
 
-const User = require('../routes/modules/user/user.model').User;
+const userController = require('./modules/user/user.controller');
 
-const registerUser = require('./modules/user/user.controller').register;
-const loginUser = require('./modules/user/user.controller').login;
+const projectsController = require('./modules/project/project.controller');
 
-const Project = require('../routes/modules/project/project.model').Project;
-
-const getProjects = require('./modules/project/project.controller').getProjects;
-const createProject = require('./modules/project/project.controller').createProject;
-const deleteProject = require('./modules/project/project.controller').deleteProject;
-
-const getVersionNames = require('./modules/version-name/version-name.controller').getVersionNames;
-const createVersionName = require('./modules/version-name/version-name.controller').createVersionName;
-const deleteVersionName = require('./modules/version-name/version-name.controller').deleteVersionName;
+const versionNameController = require('./modules/version-name/version-name.controller');
 
 mongoose.connect('mongodb://localhost/VERSION_NAMES');
 
@@ -57,15 +47,15 @@ mongodb.MongoClient.connect('mongodb://localhost:27017/VERSION_NAMES', function(
    ----------- ********* ------------ */
 
 router.get('/projects', jwtCheck, (req, res) => {
-    getProjects(req, res);
+    projectsController.getProjects(req, res);
 });
 
 router.post('/projects', jwtCheck, (req, res) => {
-    createProject(req, res);
+    projectsController.createProject(req, res);
 });
 
 router.delete('/projects/:id', jwtCheck, (req, res) => {
-    deleteProject(req, res);
+    projectsController.deleteProject(req, res);
 });
 
 /* ----------- ********* ------------
@@ -73,15 +63,15 @@ router.delete('/projects/:id', jwtCheck, (req, res) => {
    ----------- ********* ------------ */
 
 router.get('/version-names/:id', jwtCheck, (req, res) => {
-    getVersionNames(req, res);
+    versionNameController.getVersionNames(req, res);
 });
 
 router.post('/version-names/:id', jwtCheck, (req, res) => {
-    createVersionName(req, res);
+    versionNameController.createVersionName(req, res);
 });
 
 router.delete('/version-names/:id', jwtCheck, (req, res) => {
-    deleteVersionName(req, res);
+    versionNameController.deleteVersionName(req, res);
 });
 
 /* ----------- ********* ------------
@@ -89,11 +79,11 @@ router.delete('/version-names/:id', jwtCheck, (req, res) => {
    ----------- ********* ------------ */
 
 router.post('/users', (req, res) => {
-    registerUser(req, res);
+    userController.register(req, res);
 });
 
 router.post('/login', (req, res) => {
-    loginUser(req, res);
+    userController.login(req, res);
 });
 
 /* ----------- ********* ------------
