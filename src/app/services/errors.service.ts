@@ -13,6 +13,8 @@ export class ErrorsService {
             'cannot_delete_project':            'An error occurred while attempting to delete this project. Please try again later.',
             'create_project_cannot_save_user':  'Saving your user data failed. You may not see this project in your list.',
             'cannot_save_user':                 'Apologies - we couldn\'t register you. Please try again later.',
+            'unknown_email':                    'We don\'t know that email',
+            'incorrect_password':               'That password is incorrect',
             'generic':                          'Sorry, some random weird thing happened. Please try again later.'
         };
     }

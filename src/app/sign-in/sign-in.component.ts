@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { AuthService } from './../services/auth.service';
+import { ErrorsService } from './../services/errors.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -13,20 +14,16 @@ export class SignInComponent {
   @ViewChild('email') emailField: ElementRef;
   @ViewChild('password') passwordField: ElementRef;
   signinForm: FormGroup;
-  message: string;
+  errorMessage: string;
   loading = false;
-  ERROR_TYPES: any = {
-    EMAIL: 'unknown_email',
-    PASSWORD: 'incorrect_password'
-  };
-  ERROR_MESSAGES: any = {
-    EMAIL: 'We don\'t know that email',
-    PASSWORD: 'That password is incorrect',
-    GENERIC: 'Some random weird thing happened'
-  };
 
-  constructor(private fb: FormBuilder, public authService: AuthService, private router: Router) {
-    this.message = '';
+  constructor(
+    private fb: FormBuilder,
+    public authService: AuthService,
+    private router: Router,
+    private errorsService: ErrorsService
+    ) {
+    this.errorMessage = '';
     this.createForm();
   }
 
@@ -43,7 +40,7 @@ export class SignInComponent {
 
   login(form) {
     this.loading = true;
-    this.message = '';
+    this.errorMessage = '';
     this.authService.login(form.controls.email.value, form.controls.password.value)
       .subscribe((response) => {
         this.loading = false;
@@ -56,19 +53,7 @@ export class SignInComponent {
   }
 
   displayLoginError(error: Error): void {
-    switch (error.message) {
-      case this.ERROR_TYPES.EMAIL:
-        this.emailField.nativeElement.focus();
-        this.message = this.ERROR_MESSAGES.EMAIL;
-        break;
-      case this.ERROR_TYPES.PASSWORD:
-        this.passwordField.nativeElement.focus();
-        this.message = this.ERROR_MESSAGES.PASSWORD;
-        break;
-      default:
-        this.message = this.ERROR_MESSAGES.GENERIC;
-        break;
-    }
+    this.errorMessage = this.errorsService.getErrorMessage(error.message);
   }
 
 }
