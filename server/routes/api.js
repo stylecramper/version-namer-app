@@ -37,6 +37,7 @@ const createProject = require('./modules/project/project.controller').createProj
 const deleteProject = require('./modules/project/project.controller').deleteProject;
 
 const getVersionNames = require('./modules/version-name/version-name.controller').getVersionNames;
+const createVersionName = require('./modules/version-name/version-name.controller').createVersionName;
 
 mongoose.connect('mongodb://localhost/VERSION_NAMES');
 
@@ -75,38 +76,7 @@ router.get('/version-names/:id', jwtCheck, (req, res) => {
 });
 
 router.post('/version-names/:id', jwtCheck, (req, res) => {
-    const projectVersionName = {
-        adjective: req.body.versionName.adjective._adjective,
-        animal: req.body.versionName.animal._animal,
-        created_at: new Date(),
-        updated_at: new Date()
-    };
-    ProjectVersionName.create(projectVersionName)
-        .then((pvn) => {console.log('new project version name', pvn);
-            Project.findById(req.params.id).then((projectfound) => {
-                projectfound.project_version_names = projectfound.project_version_names.concat([pvn._id]);
-                projectfound.current_project_version_name = pvn._id;
-                projectfound.save((err) => {console.log('### project save error', err);
-                    if (err) {
-                        res
-                        .status(500)
-                        .json({ code: 'error', message: 'cannot_save_project' });
-                        return;
-                    }
-                    res
-                    .status(200)
-                    .json({ code: 'success', versionName: { id: pvn._id, adjective: pvn.adjective, animal: pvn.animal } });
-                });
-            }, (err) => {
-                res
-                .status(500)
-                .json({ code: 'error', message: 'project_not_found' });
-            });
-        }, (err) => {
-            res
-            .status(500)
-            .json({ code: 'error', message: 'cannot_create_version_name' });
-        });
+    createVersionName(req, res);
 });
 
 router.delete('/version-names/:id', jwtCheck, (req, res) => {

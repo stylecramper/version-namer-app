@@ -31,6 +31,42 @@ const getVersionNames = (req, res) => {
     });
 };
 
+const createVersionName = (req, res) => {
+    const projectVersionName = {
+        adjective: req.body.versionName.adjective._adjective,
+        animal: req.body.versionName.animal._animal,
+        created_at: new Date(),
+        updated_at: new Date()
+    };
+    ProjectVersionName.create(projectVersionName)
+        .then((pvn) => {console.log('new project version name', pvn);
+            Project.findById(req.params.id).then((projectfound) => {
+                projectfound.project_version_names = projectfound.project_version_names.concat([pvn._id]);
+                projectfound.current_project_version_name = pvn._id;
+                projectfound.save((err) => {console.log('### project save error', err);
+                    if (err) {
+                        res
+                        .status(500)
+                        .json({ code: 'error', message: 'cannot_save_project' });
+                        return;
+                    }
+                    res
+                    .status(200)
+                    .json({ code: 'success', versionName: { id: pvn._id, adjective: pvn.adjective, animal: pvn.animal } });
+                });
+            }, (err) => {
+                res
+                .status(500)
+                .json({ code: 'error', message: 'project_not_found' });
+            });
+        }, (err) => {
+            res
+            .status(500)
+            .json({ code: 'error', message: 'cannot_create_version_name' });
+        });
+};
+
 module.exports = {
-    getVersionNames: getVersionNames
+    getVersionNames: getVersionNames,
+    createVersionName: createVersionName
 };
