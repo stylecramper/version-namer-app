@@ -30,6 +30,8 @@ const User = require('../routes/modules/user/user.model').User;
 const registerUser = require('./modules/user/user.controller').register;
 const loginUser = require('./modules/user/user.controller').login;
 
+const Project = require('../routes/modules/project/project.model').Project;
+
 const ProjectVersionNameSchema = new Schema({
     adjective: { type: String, required: true },
     animal:  { type: String, required: true },
@@ -38,16 +40,7 @@ const ProjectVersionNameSchema = new Schema({
 });
 const ProjectVersionName = mongoose.model('ProjectVersionName', ProjectVersionNameSchema);
 
-const ProjectSchema = new Schema({
-    project_name: String,
-    project_version_names: [ObjectId],
-    current_project_version_name: ObjectId,
-    created_at: Date,
-    updated_at: Date
-});
-const Project = mongoose.model('Project', ProjectSchema);
-
-[ProjectSchema, ProjectVersionNameSchema].forEach(function setPreSaveBehaviour(model) {
+[ProjectVersionNameSchema].forEach(function setPreSaveBehaviour(model) {
     model.pre('save', function(next) {
         var currentDate = new Date();
         this.updated_at = currentDate;
