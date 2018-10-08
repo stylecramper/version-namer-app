@@ -16,6 +16,9 @@ export class ErrorsService {
             'unknown_email':                    'We don\'t know that email',
             'incorrect_password':               'That password is incorrect',
             'cannot_get_version_names':         'An error occurred while retrieving your project\'s version names. Please try again later.',
+            'cannot_create_version_name':       'An error occurred while saving this version name. Please try again later.',
+            'cannot_delete_version_name':       'An error occurred while attempting to delete this version name. Please try again later.',
+            'cannot_save_project':              'An error occurred while saving this project. Please try again later.',
             'generic':                          'Sorry, some random weird thing happened. Please try again later.'
         };
     }
