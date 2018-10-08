@@ -1,7 +1,6 @@
 /* jslint esversion: 6 */
 const express = require('express');
 const bodyParser = require('body-parser');
-const jwt = require('jsonwebtoken');
 const router = express.Router();
 const mongodb = require('mongodb');
 
@@ -29,6 +28,7 @@ const Adjective = mongoose.model('Adjective', AdjectiveSchema);
 const User = require('../routes/modules/user/user.model').User;
 
 const registerUser = require('./modules/user/user.controller').register;
+const loginUser = require('./modules/user/user.controller').login;
 
 const ProjectVersionNameSchema = new Schema({
     adjective: { type: String, required: true },
@@ -322,34 +322,7 @@ router.post('/users', (req, res) => {
 });
 
 router.post('/login', (req, res) => {
-    User.findOne({ email: req.body.email }, '_id firstname email password salt', (err, user) => {
-        if (err) {
-            res
-                .status(500)
-                .json({ code: 'error', message: 'generic_error' });
-            return;
-        }
-        if (user === null) {
-            res
-                .status(401)
-                .json({ code: 'error', message: 'unknown_email' });
-            return;
-        }
-        if (bcrypt.hashSync(req.body.password, user.salt) === user.password) {
-            // user is valid, log them in
-            const token = jwt.sign({
-                id: user._id,
-                username: user.username
-            }, globals.SECRET_KEY, {expiresIn: '3 hours'});
-            res
-                .status(200)
-                .json({ code: 'success', name: user.firstname, access_token: token });
-            return;
-        }
-        res
-            .status(401)
-            .json({ code: 'error', message: 'incorrect_password' });
-    });
+    loginUser(req, res);
 });
 
 /* ----------- ********* ------------

@@ -1,5 +1,7 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
+const globals = require('../../config/globals');
 const User = require('./user.model').User;
 
 const register = (req, res) => {
@@ -28,6 +30,38 @@ const register = (req, res) => {
     });
 };
 
+const login = (req, res) => {
+    User.findOne({ email: req.body.email }, '_id firstname email password salt', (err, user) => {
+        if (err) {
+            res
+                .status(500)
+                .json({ code: 'error', message: 'generic_error' });
+            return;
+        }
+        if (user === null) {
+            res
+                .status(401)
+                .json({ code: 'error', message: 'unknown_email' });
+            return;
+        }
+        if (bcrypt.hashSync(req.body.password, user.salt) === user.password) {
+            // user is valid, log them in
+            const token = jwt.sign({
+                id: user._id,
+                username: user.username
+            }, globals.SECRET_KEY, {expiresIn: '3 hours'});
+            res
+                .status(200)
+                .json({ code: 'success', name: user.firstname, access_token: token });
+            return;
+        }
+        res
+            .status(401)
+            .json({ code: 'error', message: 'incorrect_password' });
+    });
+};
+
 module.exports = {
-    register: register
+    register: register,
+    login: login
 };
