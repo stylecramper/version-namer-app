@@ -5,6 +5,7 @@ import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/fo
 import { PasswordValidation } from './password-validation';
 import { RegisterResponse } from './../models/register-response.model';
 import { AuthService } from './../services/auth.service';
+import { ErrorsService } from './../services/errors.service';
 
 @Component({
   selector: 'app-register',
@@ -21,7 +22,12 @@ export class RegisterComponent implements OnInit {
   private registrationState: null | string;
   private successValue = 'success';
 
-  constructor(private fb: FormBuilder, private router: Router, public authService: AuthService) {
+  constructor(
+      private fb: FormBuilder,
+      private router: Router,
+      public authService: AuthService,
+      private errorsService: ErrorsService
+    ) {
     this.strongRegularExp = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})');
     this.mediumRegularExp = new RegExp('^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})')
     this.createForm();
@@ -57,9 +63,9 @@ export class RegisterComponent implements OnInit {
         if (response.code === this.successValue) {
           this.registrationState = this.successValue;
         }
-      }, () => {
+      }, (err) => {
         this.loading = false;
-        this.errorMessage = 'Apologies - something went wrong. Please try again later.';
+        this.errorMessage = this.errorsService.getErrorMessage(err.message);
         window.scrollTo(0,document.body.scrollHeight);
       });
   }

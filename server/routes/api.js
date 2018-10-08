@@ -347,7 +347,7 @@ router.post('/users', (req, res) => {
         if (err) {
             res
                 .status(500)
-                .json({ code: 'error', message: 'generic_error' });
+                .json({ code: 'error', message: 'cannot_save_user' });
             return;
         }
         res
