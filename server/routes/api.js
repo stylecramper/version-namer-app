@@ -2,12 +2,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
-const expressjwt = require('express-jwt');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const mongodb = require('mongodb');
-
-const SECRET_KEY = '998cf65a-1f0f-4325-81ea-315b08aec537';
 
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
@@ -17,9 +14,8 @@ const ObjectId = Schema.ObjectId;
 const app = express();
 app.use(bodyParser.json());
 
-const jwtCheck = expressjwt({
-    secret: SECRET_KEY
-});
+const globals = require('./config/globals');
+const jwtCheck = globals.jwtCheck;
 
 const AnimalSchema = new Schema({
     animal: String
@@ -375,7 +371,7 @@ router.post('/login', (req, res) => {
             const token = jwt.sign({
                 id: user._id,
                 username: user.username
-            }, SECRET_KEY, {expiresIn: '3 hours'});
+            }, globals.SECRET_KEY, {expiresIn: '3 hours'});
             res
                 .status(200)
                 .json({ code: 'success', name: user.firstname, access_token: token });
