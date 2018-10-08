@@ -33,6 +33,7 @@ const loginUser = require('./modules/user/user.controller').login;
 const Project = require('../routes/modules/project/project.model').Project;
 
 const getProjects = require('./modules/project/project.controller').getProjects;
+const createProject = require('./modules/project/project.controller').createProject;
 
 const ProjectVersionNameSchema = new Schema({
     adjective: { type: String, required: true },
@@ -80,40 +81,7 @@ router.get('/projects', jwtCheck, (req, res) => {
 });
 
 router.post('/projects', jwtCheck, (req, res) => {
-    const project = {
-        project_name: req.body.project.projectname,
-        project_version_names: [],
-        current_project_version_name: null,
-        created_at: new Date(),
-        updated_at: new Date()
-    };
-    Project.create(project)
-        .then((proj) => {
-            User.findById(req.user.id).then((userfound) => {
-                userfound.projects = userfound.projects.concat([proj._id]);
-                userfound.save((err) => {console.log('### user save error', err);
-                    if (err) {
-                        res
-                            .status(500)
-                            .json({ code: 'error', message: 'create_project_cannot_save_user' });
-                        return;
-                    }
-                    res
-                        .status(200)
-                        .json({ code: 'success', project: { id: proj._id, name: proj.project_name, current_version_name: null } });
-                });
-            })
-            .catch((err) => {
-                res
-                .status(500)
-                .json({ code: 'error', message: 'user_not_found' });
-            });
-        })
-        .catch((err) => {
-            res
-                .status(500)
-                .json({ code: 'error', message: 'cannot_create_project' });
-        });
+    createProject(req, res);
 });
 
 router.delete('/projects/:id', jwtCheck, (req, res) => {
