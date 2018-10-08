@@ -11,6 +11,7 @@ import { VersionNamesService } from './../services/version-names.service';
 import { ConfirmDialogComponent } from './../common/confirm-dialog/confirm-dialog.component';
 import { ProjectType } from './../types/project-types';
 import { VersionNameType } from '../types/version-name-types';
+import { ErrorsService } from './../services/errors.service';
 
 @Component({
   selector: 'app-version-names',
@@ -90,6 +91,7 @@ export class VersionNamesComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService,
+    private errorsService: ErrorsService,
     private namesService: NamesService,
     private projectsService: ProjectsService,
     private versionNamesService: VersionNamesService,
@@ -111,17 +113,7 @@ export class VersionNamesComponent implements OnInit {
           this.versionNames = data.versionNames;
         }, (err) => {
           this.loading = false;
-          switch (err.message) {
-            case this.ERROR_TYPES.PROJECT:
-              this.errorMessage = this.ERROR_MESSAGES.PROJECT;
-              break;
-            case this.ERROR_TYPES.VERSION_NAMES:
-              this.errorMessage = this.ERROR_MESSAGES.VERSION_NAMES;
-              break;
-            default:
-              this.errorMessage = this.ERROR_MESSAGES.GENERIC;
-              break;
-          }
+          this.errorMessage = this.errorsService.getErrorMessage(err.message);
         });
   }
 
