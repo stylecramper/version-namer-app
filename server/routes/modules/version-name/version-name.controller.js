@@ -66,7 +66,46 @@ const createVersionName = (req, res) => {
         });
 };
 
+const deleteVersionName = (req, res) => {
+    console.log('DELETE version-name', req.params.id);
+    console.log('FROM project', req.query.project);
+    // TODO: improve error responses
+    ProjectVersionName.findByIdAndRemove(req.params.id, (err, docs) => {
+        if (err) {
+            res
+                .status(500)
+                .json({ code: 'error', message: 'cannot_delete_version_name' });
+            return;
+        }
+        Project.findById(req.query.project).then((projectfound) => {
+            projectfound.project_version_names = projectfound.project_version_names.filter((pvn) => {
+                return pvn.toString() !== req.params.id;
+            });
+            if (projectfound.current_project_version_name.toString() === req.params.id) {
+                // deleted version name was current version name
+                projectfound.current_project_version_name = projectfound.project_version_names[projectfound.project_version_names.length - 1];
+            }
+            projectfound.save((err) => {
+                if (err) {
+                    res
+                    .status(500)
+                    .json({ code: 'error', message: 'cannot_save_project' });
+                    return;
+                }
+                res
+                .status(200)
+                .json({ code: 'success', versionNameId: req.params.id, versionName: `${docs.adjective} ${docs.animal}` });
+            });
+        }, (err) => {
+            res
+            .status(500)
+            .json({ code: 'error', message: 'project_not_found' });
+        });
+    });
+};
+
 module.exports = {
     getVersionNames: getVersionNames,
-    createVersionName: createVersionName
+    createVersionName: createVersionName,
+    deleteVersionName: deleteVersionName
 };
