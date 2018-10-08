@@ -1,5 +1,6 @@
 const Project = require('./project.model').Project;
 const User = require('../user/user.model').User;
+const ProjectVersionName = require('../version-name/version-name.model').ProjectVersionName;
 
 const getProjects = (req, res) => {
     User.findById(req.user.id, 'projects').exec((err, docs) => {
@@ -72,7 +73,67 @@ const createProject = (req, res) => {
         });
 };
 
+const deleteProject = (req, res) => {
+    console.log('DELETE project', req.params.id);
+    let promises = [];
+
+    Project.findById(req.params.id, 'project_name project_version_names').exec((err, docs) => {
+        let error;
+
+        if (err) {console.log('#### err', err.name + ', ' + err.kind);
+            if (err.name === 'CastError' && err.kind === 'ObjectId') {
+                error = { code: 'error', message: 'project_not_found' };
+            } else {
+                error = { code: 'error', message: 'generic_error' };
+            }
+            res
+                .status(500)
+                .json(error);
+            return;
+        }
+        promises.push(ProjectVersionName.find({
+            '_id': { $in: docs.project_version_names }
+        }).exec((err, docs) => {
+            docs.map((name) => {console.log('#### deleting name', name._id);
+                ProjectVersionName.findByIdAndRemove(name._id, (err, name) => {
+                    // not critical error if project's version names are not deleted
+                });
+            });
+        }));
+        promises.push(Project.findByIdAndRemove(req.params.id).exec());
+        promises.push(User.findById(req.user.id).exec((err, userfound) => {
+            if (!err) {
+                userfound.projects = userfound.projects.filter((project) => {
+                    return project.toString() !== req.params.id;
+                });
+                userfound.save();
+            }
+        }));
+        Promise.all(promises.map(reflect)).then(function(results){
+            if (results[1].status === 'rejected') {
+                console.log('Project.findByIdAndRemove err', results[1].err);
+                error = { code: 'error', message: 'cannot_delete_project' };
+                res.status(500).json(error);
+                return;
+            }
+            if (results[2].status === 'rejected') {
+                console.log('### User.findById err', results[2].err);
+                error = { code: 'error', message: 'user_not_found' };
+                res.status(500).json(error);
+                return;
+            }
+            res.status(200).json({ code: 'success', projectId: req.params.id, projectName: docs.project_name });
+        });
+    });
+};
+
+function reflect(promise){
+    return promise.then(function(v){ return {value:v, status: 'resolved' }; },
+                        function(e){ return {err:e, status: 'rejected' }; });
+}
+
 module.exports = {
     getProjects: getProjects,
-    createProject: createProject
+    createProject: createProject,
+    deleteProject: deleteProject
 };
