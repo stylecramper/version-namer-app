@@ -12,8 +12,15 @@
       <li *ngFor="let project of projects">
         <span class="project-name">{{ project.name }}</span>
         <div>
-          <button class="btn btn-secondary" (click)="editVersionNames(project)">Edit version names</button>
-          <button class="btn btn-danger" (click)="openConfirmDialog(project)">Delete</button>
+          <button
+            mat-raised-button
+            class="edit"
+            (click)="editVersionNames(project)">Edit version names</button>
+          <button
+            mat-raised-button
+            color="warn"
+            class="delete-project"
+            (click)="openConfirmDialog(project)">Delete</button>
         </div>
       </li>
     </ul>
