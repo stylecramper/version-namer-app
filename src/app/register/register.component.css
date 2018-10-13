@@ -68,6 +68,10 @@
     width: 240px;
 }
 
+.register-form button:enabled {
+    background-color: #007bff;
+}
+
 .alert-danger {
     margin-top: 1em;
 }
