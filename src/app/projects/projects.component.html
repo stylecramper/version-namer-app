@@ -18,7 +18,11 @@
       </li>
     </ul>
   </section>
-  <button (click)="createProject()" class="btn btn-primary">Create a new project</button>
+  <button
+    mat-raised-button
+    color="primary"
+    class="new-project"
+    (click)="createProject()">Create a new project</button>
 </div>
 <div *ngIf="!isLoggedIn">
   You must be signed in to view your projects.

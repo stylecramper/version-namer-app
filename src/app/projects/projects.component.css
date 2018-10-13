@@ -11,6 +11,10 @@
     padding: 0.5em;
 }
 
+button.new-project {
+    background-color: #007bff;
+}
+
 .btn-danger {
     margin-left: 0.5em;
 }

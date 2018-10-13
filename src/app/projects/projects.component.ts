@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatDialog, MatDialogConfig, MatSnackBar } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatSnackBar, MatButton } from '@angular/material';
 
 import { AuthService } from '../services/auth.service';
 import { ErrorsService } from './../services/errors.service';
