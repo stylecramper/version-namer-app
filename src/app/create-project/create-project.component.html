@@ -15,9 +15,11 @@
           </label>
         </div>
         <button
+        mat-raised-button
+        color="primary"
         [disabled]="projectForm.invalid"
         type="submit"
-        class="btn btn-primary">Create Project</button>
+        class="create-project">Create Project</button>
       </form>
       <div class="alert alert-danger" role="alert" *ngIf="errorMessage">
         {{ errorMessage }}

@@ -3,3 +3,7 @@
     min-width: 300px;
     width: 50%;
 }
+
+button.create-project {
+    background-color: #007bff;
+}
