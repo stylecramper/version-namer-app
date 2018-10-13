@@ -9,7 +9,13 @@
     <span>{{ versionName.adjective }} {{ versionName.animal }}</span> <button class="btn btn-danger" (click)="openConfirmDialog(versionName)">Delete</button>
   </li>
 </ul>
-<button (click)="showVersionName()" *ngIf="!dashboardOpen" class="btn btn-primary" style="position: relative; z-index: 100">Create a new version name</button>
+<button
+  mat-raised-button
+  color="primary"  
+  (click)="showVersionName()"
+  *ngIf="!dashboardOpen"
+  class="new-version-name"
+  style="position: relative; z-index: 100">Create a new version name</button>
 <div class="dashboard-mask" *ngIf="dashboardOpen"></div>
 <div class="dashboard-container" *ngIf="dashboardOpen">
   <div class="version-name-dashboard">

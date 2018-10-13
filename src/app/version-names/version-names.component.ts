@@ -1,7 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatDialogConfig, MatSnackBar } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatSnackBar, MatButton } from '@angular/material';
 
 import { AuthService } from './../services/auth.service';
 import { NamesService } from './../services/names.service';
