@@ -35,12 +35,16 @@
     </div>
     <div class="name-action-buttons">
       <button
-        class="btn btn-success yep-button"
+        mat-raised-button
+        color="accent"
+        class="yep-button"
         [@buttonState]="'in'"
         *ngIf="wordsAreIn"
         (click)="saveNewVersionName()">Yep</button>
       <button
-        class="btn btn-danger nope-button"
+        mat-raised-button
+        color="warn"  
+        class="nope-button"
         [@buttonState]="'in'"
         *ngIf="wordsAreIn"
         (click)="nextName()">Nope</button>
