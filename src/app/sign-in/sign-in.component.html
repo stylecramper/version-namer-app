@@ -26,9 +26,10 @@
       class="form-control password-input">
     </div>
     <button
+    mat-raised-button
+    color="primary"
     [disabled]="signinForm.invalid"
-    type="submit"
-    class="btn btn-primary">Sign In</button>
+    type="submit">Sign In</button>
   </form>
   <div class="alert alert-danger" role="alert" *ngIf="errorMessage">
     {{ errorMessage }}

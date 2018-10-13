@@ -26,6 +26,10 @@
     border: solid 1px lightgreen;
 }
 
+.signin-form button:enabled {
+    background-color: #007bff;
+}
+
 .alert{
     font-size: 0.75em;
     font-style: italic;
