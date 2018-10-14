@@ -4,7 +4,7 @@
 .well.logged-in {
     position: absolute;
     right: 20px;
-    top: 8px;
+    top: 3px;
 }
 
 .link {
@@ -16,6 +16,13 @@
     color: #0056b3;
 }
 
-.logout-link {
+.mat-button.mat-primary.logout-link {
+    color: #007bff;
     margin-left: 10px;
+    position: relative;
+    top: -1px;
+}
+
+.mat-button.mat-primary .mat-button-focus-overlay {
+    background-color: rgba(0,0,0,0.08);
 }

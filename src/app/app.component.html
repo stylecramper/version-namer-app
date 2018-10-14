@@ -5,7 +5,11 @@
       <navigation></navigation>
       <div class="well logged-in" *ngIf="loggedIn()">
         Logged in as <b>{{ authService.getUsername() }}</b>
-        <button class="btn btn-light link logout-link" (click)="logout()">Log out</button>
+        <button
+          mat-button
+          color="primary"
+          class="logout-link"
+          (click)="logout()">Log out</button>
       </div>
       <router-outlet name="signin"></router-outlet>
   </header>
