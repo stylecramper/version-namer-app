@@ -13,6 +13,7 @@ export class ErrorsService {
             'cannot_delete_project':            'An error occurred while attempting to delete this project. Please try again later.',
             'create_project_cannot_save_user':  'Saving your user data failed. You may not see this project in your list.',
             'cannot_save_user':                 'Apologies - we couldn\'t register you. Please try again later.',
+            'duplicate_email':                  'That email has already been used. Have you registered before?',
             'unknown_email':                    'We don\'t know that email',
             'incorrect_password':               'That password is incorrect',
             'cannot_get_version_names':         'An error occurred while retrieving your project\'s version names. Please try again later.',

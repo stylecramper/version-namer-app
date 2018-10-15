@@ -19,6 +19,12 @@ const register = (req, res) => {
     });
     user.save((err) => {console.log('### err', err);
         if (err) {
+            if (err.message.includes('duplicate key') && err.message.includes('email')) {
+                res
+                    .status(500)
+                    .json({ code: 'error', message: 'duplicate_email' });
+                return;
+            }
             res
                 .status(500)
                 .json({ code: 'error', message: 'cannot_save_user' });
