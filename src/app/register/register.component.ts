@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 
-import { PasswordValidation } from './password-validation';
 import { RegisterResponse } from './../models/register-response.model';
 import { AuthService } from './../services/auth.service';
 import { ErrorsService } from './../services/errors.service';
@@ -14,11 +13,14 @@ import { ErrorsService } from './../services/errors.service';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
+  @ViewChild('password') passwordField: ElementRef;
   userForm: FormGroup;
   password: AbstractControl;
   strongRegularExp: RegExp;
   mediumRegularExp: RegExp;
   errorMessage = '';
+  showButtonState = 'Show';
+  passwordInputState = true;
   loading = false;
   private registrationState: null | string;
   private successValue = 'success';
@@ -49,10 +51,7 @@ export class RegisterComponent implements OnInit {
       firstname: ['', Validators.required],
       lastname: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
-      confirmPassword: ['', Validators.required]
-    }, {
-      validator: PasswordValidation.MatchPassword
+      password: ['', Validators.required]
     });
   }
 
@@ -84,19 +83,19 @@ export class RegisterComponent implements OnInit {
   isWeak() {
     return this.password.dirty && this.passwordStrength() === 'weak';
   }
-  
+
   isMedium() {
     return this.password.dirty && this.passwordStrength() === 'medium';
   }
-  
+
   isStrong() {
     return this.password.dirty && this.passwordStrength() === 'strong';
   }
 
-  passwordMatchError() {
-    const confirmPassword = this.userForm.controls.confirmPassword;
-
-    return confirmPassword.errors && confirmPassword.errors.MatchPassword && confirmPassword.dirty;
+  showHidePassword() {
+    this.passwordField.nativeElement.setAttribute('type', (this.passwordInputState) ? 'text' : 'password');
+    this.showButtonState = (this.passwordInputState) ? 'Hide' : 'Show';
+    this.passwordInputState = !this.passwordInputState;
   }
 
 }
