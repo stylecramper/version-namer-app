@@ -34,6 +34,11 @@
 .password-container {
     position: relative;
 }
+.password-container .password-field {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
+
 .strength-check {
     box-sizing: content-box;
     color: white;
@@ -70,9 +75,13 @@
 }
 
 .register-form .password-toggle-button {
+    border-bottom-left-radius: 0;
+    border-color: gray;
+    border-top-left-radius: 0;
+    height: 38px;
     left: 240px;
     position: absolute;
-    top: 25px;
+    top: 24px;
 }
 
 .alert-danger {
