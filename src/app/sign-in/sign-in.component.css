@@ -26,7 +26,7 @@
     border: solid 1px lightgreen;
 }
 
-.signin-form button:enabled {
+.signin-form button.sign-in-button:enabled {
     background-color: #007bff;
 }
 
