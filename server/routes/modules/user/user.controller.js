@@ -31,7 +31,7 @@ const register = (req, res) => {
             return;
         }
         res
-            .status(200)
+            .status(201)
             .json({ code: 'success', user: user._id });
     });
 };

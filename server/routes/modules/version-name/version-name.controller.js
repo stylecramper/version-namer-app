@@ -51,7 +51,7 @@ const createVersionName = (req, res) => {
                         return;
                     }
                     res
-                    .status(200)
+                    .status(201)
                     .json({ code: 'success', versionName: { id: pvn._id, adjective: pvn.adjective, animal: pvn.animal } });
                 });
             }, (err) => {

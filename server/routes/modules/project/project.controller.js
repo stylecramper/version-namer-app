@@ -56,7 +56,7 @@ const createProject = (req, res) => {
                         return;
                     }
                     res
-                        .status(200)
+                        .status(201)
                         .json({ code: 'success', project: { id: proj._id, name: proj.project_name, current_version_name: null } });
                 });
             })
