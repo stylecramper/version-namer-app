@@ -63,6 +63,7 @@
 
 .name-action-buttons button {
     font-size: 2em;
+    padding: .375rem .75rem;
     margin: 0 20px;
 }
 
@@ -74,7 +75,6 @@
     background-color: #eee;
     display: flex;
     justify-content: space-between;
-    line-height: 3em;
     margin-top: 1em;
     padding: 0.5em;
 }
@@ -83,12 +83,12 @@
     background-color: aquamarine;
 }
 
-button.new-version-name {
-    background-color: #007bff;
+.names-list li > span {
+    line-height: 2.3;
 }
 
-.mat-raised-button {
-    padding: .375rem .75rem;
+button.new-version-name {
+    background-color: #007bff;
 }
 
 .mat-raised-button.mat-accent {
