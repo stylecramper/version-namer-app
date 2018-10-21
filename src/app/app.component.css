@@ -1,6 +1,19 @@
+body {
+    font-family: 'Noto Sans', sans-serif;
+}
+
+header {
+    padding-bottom: 60px;
+}
+
+h1 {
+    font-family: 'Fjalla One', sans-serif;
+}
+
 .page-container {
     position: relative;
 }
+
 .well.logged-in {
     position: absolute;
     right: 20px;

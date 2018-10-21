@@ -1,0 +1,19 @@
+img {
+    max-width: 100%;
+}
+
+.card {
+    align-items: center;
+    justify-content: center;
+}
+
+.teaser {
+    background-color: rgba(256,256,256,0.5);
+    font-family: 'Fjalla One', sans-serif;
+    font-size: 2em;
+    margin-top: -40px;
+    padding: 30px;
+    position: absolute;
+    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.9);
+    width: 50%;
+}

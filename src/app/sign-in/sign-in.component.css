@@ -4,6 +4,7 @@
     padding: 20px 40px;
     position: absolute;
     right: 0;
+    z-index: 1;
 }
 
 .signin-form {
