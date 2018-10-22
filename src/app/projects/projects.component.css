@@ -11,8 +11,14 @@
     padding: 0.5em;
 }
 
+.projects-list li > span {
+    color: #fff;
+    font-weight: 700;
+}
+
 button.new-project {
     background-color: #0059a9;
+    margin-top: 0.75em;
 }
 
 .delete-project {
