@@ -3,3 +3,13 @@ nav {
     right: 12px;
     top: 0;
 }
+
+.nav-link.sign-in-link {
+    padding-right: 0;
+}
+
+.sign-in-link::after {
+    color: #000;
+    content: " /";
+    margin-left: 0.5em;
+}

@@ -1,6 +1,6 @@
 <nav *ngIf="!authService.isLoggedIn()">
   <ul class="nav justify-content-end">
-    <li class="nav-item"><a class="nav-link" [routerLink]="[{ outlets: { signin: ['sign-in'] } }]">Sign in</a></li> /
+    <li class="nav-item"><a class="nav-link sign-in-link" [routerLink]="[{ outlets: { signin: ['sign-in'] } }]">Sign in</a></li>
     <li class="nav-item"><a class="nav-link" [routerLink]="[{ outlets: { primary: ['register'], signin: null } }]">Register</a></li>
   </ul>
 </nav>
