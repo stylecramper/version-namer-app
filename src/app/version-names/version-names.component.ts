@@ -21,7 +21,7 @@ import { ErrorsService } from './../services/errors.service';
     trigger('adjectiveState', [
       state('in', style({
         left: '30px',
-        'font-size': '50px',
+        'font-size': '45px',
         top: '20%'
       })),
       transition(':enter', [
@@ -35,7 +35,7 @@ import { ErrorsService } from './../services/errors.service';
     trigger('animalState', [
       state('in', style({
         right: '30px',
-        'font-size': '50px',
+        'font-size': '45px',
         top: '20%'
       })),
       transition(':enter', [

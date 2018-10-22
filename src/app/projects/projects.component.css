@@ -3,7 +3,7 @@
 }
 
 .projects-list li {
-    background-color: #eee;
+    background-color: #a5d1f9;
     display: flex;
     justify-content: space-between;
     line-height: 2.2em;
@@ -12,7 +12,7 @@
 }
 
 button.new-project {
-    background-color: #007bff;
+    background-color: #0059a9;
 }
 
 .delete-project {
