@@ -17,3 +17,20 @@ img {
     text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.9);
     width: 55%;
 }
+
+footer {
+    background-color: #0059a9;
+    color: white;
+    margin-top: 1.5em;
+    padding: 3em 1.5em 1em;
+    text-align: right;
+}
+
+footer a {
+    color: #fff;
+}
+
+footer a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
