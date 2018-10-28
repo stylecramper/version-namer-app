@@ -1,4 +1,4 @@
-[
+module.exports = [
 "obnoxious",
 "dead",
 "hairless",
@@ -103,4 +103,4 @@
 "fiercely-loyal",
 "out-of-control",
 "fear-inspiring"
-]
+];

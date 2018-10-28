@@ -1,4 +1,4 @@
-[
+module.exports = [
 "lemming",
 "aardvark",
 "rabbit",
@@ -103,4 +103,4 @@
 "anaconda",
 "leopard",
 "manatee"
-]
+];
