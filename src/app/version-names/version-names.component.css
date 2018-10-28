@@ -72,7 +72,8 @@
 }
 
 .names-list li {
-    background-color: #eee;
+    background-color: #fff;
+    border: solid 1px #ccc;
     display: flex;
     justify-content: space-between;
     margin-top: 1em;
@@ -80,7 +81,8 @@
 }
 
 .names-list li.current-name {
-    background-color: #75f9b3;
+    background-color: #b4dcff;
+    border-color: #fff;
 }
 
 .names-list li > span {
