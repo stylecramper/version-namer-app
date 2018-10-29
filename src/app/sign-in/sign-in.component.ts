@@ -36,7 +36,7 @@ export class SignInComponent {
   }
 
   close() {
-    this.router.navigate(['./', { outlets: { signin: null }}]);
+    this.router.navigate([ { outlets: { primary: 'projects', signin: null }} ]);
   }
 
   login(form) {
