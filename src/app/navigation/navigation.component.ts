@@ -20,9 +20,7 @@ export class NavigationComponent implements OnInit {
   }
 
   changeLoggedInStatus(status: boolean): void {
-    if (!status) {
-      this.activeLink = 'home';
-    }
+    this.activeLink = (status) ? 'projects' : 'home';
   }
 
 }
