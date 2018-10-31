@@ -25,7 +25,7 @@ export class ErrorsService {
     }
 
     getErrorMessage(type: string): string {
-        return (this.ERROR_MAP[type]) ? this.ERROR_MAP[type]: this.ERROR_MAP['generic'];
+        return (this.ERROR_MAP[type]) ? this.ERROR_MAP[type] : this.ERROR_MAP['generic'];
     }
 
 }
