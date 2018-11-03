@@ -6,7 +6,7 @@ This project was created in 2018 by @stylecramper (Matt Anderson).
 
 ## Getting Started
 
-First, install dependencies. You'll need Node and NPM, as well as MongoDB. Instructions for installing those can be found at [Treehouse Installation Guides](https://treehouse.github.io/installation-guides/). Be sure to create the `/data/db` directory. Once you have NPM, you can install node modules by running `npm install` in the root folder.
+First, install dependencies. You'll need Node and NPM, as well as MongoDB (version 3.6.8 recommended). Instructions for installing those can be found at [Treehouse Installation Guides](https://treehouse.github.io/installation-guides/). Be sure to create the `/data/db` directory. Once you have NPM, you can install node modules by running `npm install` in the root folder.
 
 Run the local MongoDB: in a terminal, type `mongod`. Then to connect to the local MongoDB, open a new tab or window and type `mongo`.
 
