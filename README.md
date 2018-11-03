@@ -6,13 +6,17 @@ This project was created in 2018 by @stylecramper (Matt Anderson).
 
 ## Getting Started
 
-First, install dependencies. You'll need Node and NPM, as well as MongoDB (version 3.6.8 recommended). Instructions for installing those can be found at [Treehouse Installation Guides](https://treehouse.github.io/installation-guides/). Be sure to create the `/data/db` directory. Once you have NPM, you can install node modules by running `npm install` in the root folder.
+First, install dependencies. You'll need Node and NPM, as well as MongoDB (version 3.6.8 recommended). Instructions for installing those can be found at [Treehouse Installation Guides](https://treehouse.github.io/installation-guides/). Be sure to create the `/data/db` directory.
 
 Run the local MongoDB: in a terminal, type `mongod`. Then to connect to the local MongoDB, open a new tab or window and type `mongo`.
 
 ## Seeding the database with fixtures
 
-In your terminal, `cd` to the root folder and run `node scaffold` to create the VERSION_NAMES database and insert the provided default set of animal names and adjectives. After the data is inserted into the database, you should see the message `### VERSION_NAMES database created. DONE inserting animals and adjectives.` in the terminal output.
+In your terminal, `cd` to the root folder and install node modules by running `npm install`. Now run `node scaffold` to create the VERSION_NAMES database and insert the provided default set of animal names and adjectives. After the data is inserted into the database, you should see the message `### VERSION_NAMES database created. DONE inserting animals and adjectives.` in the terminal output.
+
+## Build the project
+
+In the root folder, enter `npm run build` to bundle and build the project.
 
 ## Start the server
 
