@@ -1,4 +1,11 @@
 <h3>Version names for project "<span>{{ project.name }}</span>"</h3>
+<button
+  mat-raised-button
+  color="primary"  
+  (click)="showVersionName()"
+  *ngIf="!dashboardOpen"
+  class="new-version-name"
+  style="position: relative; z-index: 100">Create a new version name</button>
 <div class="alert alert-danger" role="alert" *ngIf="errorMessage">
   {{ errorMessage }}
 </div>
@@ -9,13 +16,6 @@
     <span>{{ versionName.adjective }} {{ versionName.animal }}</span> <button mat-raised-button color="warn" class="delete-version-name" (click)="openConfirmDialog(versionName)">Delete</button>
   </li>
 </ul>
-<button
-  mat-raised-button
-  color="primary"  
-  (click)="showVersionName()"
-  *ngIf="!dashboardOpen"
-  class="new-version-name"
-  style="position: relative; z-index: 100">Create a new version name</button>
 <div class="dashboard-mask" *ngIf="dashboardOpen"></div>
 <div class="dashboard-container" *ngIf="dashboardOpen">
   <div class="version-name-dashboard">

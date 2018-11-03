@@ -18,7 +18,7 @@
 
 button.new-project {
     background-color: #0059a9;
-    margin-top: 0.75em;
+    margin: 0.75em 0;
 }
 
 .delete-project {

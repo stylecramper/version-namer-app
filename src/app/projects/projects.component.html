@@ -8,6 +8,11 @@
 
   <section class="projects" *ngIf="hasProjects()">
     <h3>My Projects</h3>
+    <button
+    mat-raised-button
+    color="primary"
+    class="new-project"
+    (click)="createProject()">Create a new project</button>
     <ul class="projects-list">
       <li *ngFor="let project of projects">
         <span class="project-name">{{ project.name }}</span>
@@ -25,11 +30,6 @@
       </li>
     </ul>
   </section>
-  <button
-    mat-raised-button
-    color="primary"
-    class="new-project"
-    (click)="createProject()">Create a new project</button>
 </div>
 <div *ngIf="!isLoggedIn">
   You must be signed in to view your projects.

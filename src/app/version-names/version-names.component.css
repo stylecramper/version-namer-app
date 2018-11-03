@@ -91,6 +91,7 @@
 
 button.new-version-name {
     background-color: #0059a9;
+    margin: 0.75em 0;
 }
 
 .mat-raised-button.mat-accent {
