@@ -14,20 +14,12 @@
     class="new-project"
     (click)="createProject()">Create a new project</button>
     <ul class="projects-list">
-      <li *ngFor="let project of projects">
-        <span class="project-name">{{ project.name }}</span>
-        <div>
-          <button
-            mat-raised-button
-            class="edit"
-            (click)="editVersionNames(project)">Edit version names</button>
-          <button
-            mat-raised-button
-            color="warn"
-            class="delete-project"
-            (click)="openConfirmDialog(project)">Delete</button>
-        </div>
-      </li>
+      <app-project-item
+        [project]="project"
+        (openedConfirmDialog)="onOpenConfirmDialog($event)"
+        (edited)="onEditVersionNames($event)"
+        *ngFor="let project of projects">
+      </app-project-item>
     </ul>
   </section>
 </div>

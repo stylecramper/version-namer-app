@@ -1,0 +1,17 @@
+li {
+    background-color: #a5d1f9;
+    display: flex;
+    justify-content: space-between;
+    line-height: 2.2em;
+    margin-top: 1em;
+    padding: 0.5em;
+}
+
+li > span {
+    color: #fff;
+    font-weight: 700;
+}
+
+.delete-project {
+    margin-left: 0.5em;
+}

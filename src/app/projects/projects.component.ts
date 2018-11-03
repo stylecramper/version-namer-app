@@ -6,6 +6,7 @@ import { AuthService } from '../services/auth.service';
 import { ErrorsService } from './../services/errors.service';
 import { ProjectsService } from './../services/projects.service';
 import { ProjectType } from '../types/project-types';
+import { ProjectItemComponent } from './project-item/project-item.component';
 import { ConfirmDialogComponent } from './../common/confirm-dialog/confirm-dialog.component';
 
 @Component({
@@ -75,7 +76,7 @@ export class ProjectsComponent implements OnInit {
         });
   }
 
-  editVersionNames(project: ProjectType): void {
+  onEditVersionNames(project: ProjectType): void {
     this.router.navigate(['/version-names/', project.id]);
   }
 
@@ -97,7 +98,7 @@ export class ProjectsComponent implements OnInit {
       });
   }
 
-  openConfirmDialog(project: ProjectType): void {
+  onOpenConfirmDialog(project: ProjectType): void {
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.autoFocus = true;

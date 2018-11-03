@@ -2,27 +2,9 @@
     width: 700px;
 }
 
-.projects-list li {
-    background-color: #a5d1f9;
-    display: flex;
-    justify-content: space-between;
-    line-height: 2.2em;
-    margin-top: 1em;
-    padding: 0.5em;
-}
-
-.projects-list li > span {
-    color: #fff;
-    font-weight: 700;
-}
-
 button.new-project {
     background-color: #0059a9;
     margin: 0.75em 0;
-}
-
-.delete-project {
-    margin-left: 0.5em;
 }
 
 .alert-danger {

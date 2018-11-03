@@ -20,6 +20,7 @@ import { ErrorsService } from './services/errors.service';
 import { SignInComponent } from './sign-in/sign-in.component';
 import { RegisterComponent } from './register/register.component';
 import { ProjectsComponent } from './projects/projects.component';
+import { ProjectItemComponent } from './projects/project-item/project-item.component';
 import { UtilityNavigationComponent } from './utility-navigation/utility-navigation.component';
 import { CreateProjectComponent } from './create-project/create-project.component';
 import { VersionNamesComponent } from './version-names/version-names.component';
@@ -67,6 +68,7 @@ const ROUTES = [
     SignInComponent,
     RegisterComponent,
     ProjectsComponent,
+    ProjectItemComponent,
     UtilityNavigationComponent,
     CreateProjectComponent,
     VersionNamesComponent,
