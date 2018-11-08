@@ -25,6 +25,7 @@ import { UtilityNavigationComponent } from './utility-navigation/utility-navigat
 import { CreateProjectComponent } from './create-project/create-project.component';
 import { VersionNamesComponent } from './version-names/version-names.component';
 import { SpinnerComponent } from './common/spinner/spinner.component';
+import { AutofocusDirective } from './common/focus-directive/focus.directive';
 
 const ROUTES = [
   {
@@ -72,7 +73,8 @@ const ROUTES = [
     UtilityNavigationComponent,
     CreateProjectComponent,
     VersionNamesComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    AutofocusDirective
   ],
   imports: [
     BrowserModule,

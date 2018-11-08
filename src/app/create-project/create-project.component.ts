@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from '../services/auth.service';
 import { ProjectsService } from './../services/projects.service';
 import { ErrorsService } from './../services/errors.service';
+import { AutofocusDirective } from './../common/focus-directive/focus.directive';
 
 @Component({
   selector: 'app-create-project',
