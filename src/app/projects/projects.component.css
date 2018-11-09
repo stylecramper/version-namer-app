@@ -1,3 +1,8 @@
+.not-logged-in-container {
+    min-height: 220px;
+    background: url(/assets/images/whereare.png) center bottom no-repeat;
+}
+
 .projects-list {
     width: 700px;
 }

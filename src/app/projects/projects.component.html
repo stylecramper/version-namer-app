@@ -23,7 +23,7 @@
     </ul>
   </section>
 </div>
-<div *ngIf="!isLoggedIn">
+<div class="not-logged-in-container" *ngIf="!isLoggedIn">
   You must be signed in to view your projects.
 </div>
 <app-spinner *ngIf="loading"></app-spinner>
