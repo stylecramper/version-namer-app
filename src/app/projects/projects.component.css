@@ -17,3 +17,11 @@ button.new-project {
     min-width: 300px;
     width: 50%;
 }
+
+@media (max-width: 767.98px) {
+
+    .projects-list {
+        width: 100%;
+    }
+
+}
