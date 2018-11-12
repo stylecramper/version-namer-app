@@ -36,3 +36,19 @@
     font-style: italic;
     margin-top: 0.5em;
 }
+
+@media (min-width: 375px) and (max-width: 767.98px) {
+
+    .signin-form-panel {
+        top: 110px;
+    }
+
+}
+
+@media (min-width: 768px) and (max-width: 1199.98px) {
+
+    .signin-form-panel {
+        max-width: 45%;
+    }
+
+}
