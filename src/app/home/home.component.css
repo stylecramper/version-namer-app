@@ -38,3 +38,30 @@ footer a:hover {
     color: #fff;
     text-decoration: underline;
 }
+
+@media (max-width: 991.98px) {
+    
+    .teaser {
+        font-size: 1.25em;
+        margin-top: 0;
+        width: 75%;
+    }
+
+}
+
+@media (max-width: 539px) {
+
+    .home-container .card {
+        background: url(/assets/images/dirac.jpg) center top;
+        justify-content: flex-start;
+    }
+
+    .home-container img {
+        display: none;
+    }
+
+    .teaser {
+        position: relative;
+    }
+
+}

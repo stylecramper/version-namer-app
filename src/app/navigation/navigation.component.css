@@ -11,3 +11,10 @@ li {
 li.active {
     background-color: #fff;
 }
+
+@media (max-width: 545px) {
+    :host {
+        left: 15px;
+        right: auto;
+    }
+}
