@@ -105,6 +105,7 @@ export class ProjectsComponent implements OnInit {
     dialogConfig.disableClose = true;
     dialogConfig.height = '180px';
     dialogConfig.width = '400px';
+    dialogConfig.panelClass = 'delete-dialog';
     dialogConfig.data = {
       id: 1,
       title: 'Delete Project',
