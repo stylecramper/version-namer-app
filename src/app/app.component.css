@@ -51,3 +51,13 @@ h1 {
     }
 
 }
+
+@media (max-width: 479px) {
+
+    .mat-button.mat-primary.logout-link {
+        display: block;
+        right: -56px;
+        top: -4px;
+    }   
+
+}
