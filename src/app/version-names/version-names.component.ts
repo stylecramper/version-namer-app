@@ -21,7 +21,7 @@ import { ErrorsService } from './../services/errors.service';
     trigger('adjectiveState', [
       state('in', style({
         left: '30px',
-        'font-size': '45px',
+        'font-size': window.innerWidth > 687 ? '45px' : '35px',
         top: '20%'
       })),
       transition(':enter', [
@@ -36,7 +36,7 @@ import { ErrorsService } from './../services/errors.service';
       state('in', style({
         right: '30px',
         'font-size': '45px',
-        top: '20%'
+        top: window.innerWidth > 687 ? '20%' : '40%'
       })),
       transition(':enter', [
         style({right: '-240px', 'font-size': '10px', top: '100%'}),
@@ -186,6 +186,7 @@ export class VersionNamesComponent implements OnInit {
     dialogConfig.disableClose = true;
     dialogConfig.height = '220px';
     dialogConfig.width = '400px';
+    dialogConfig.panelClass = 'delete-dialog';
     dialogConfig.data = {
       id: 1,
       title: current ? 'Delete current version name' : 'Delete version name',

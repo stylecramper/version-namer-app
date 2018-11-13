@@ -98,3 +98,22 @@ button.new-version-name {
     background-color: #28a745;
     color: white;
 }
+
+@media (max-width: 686px) {
+    
+    .dashboard-container {
+        left: auto;
+        margin-left: 0;
+        width: calc(100% - 30px);
+    }
+
+}
+
+@media (max-width: 430px) {
+
+    .names-list {
+        padding-inline-start: 0;
+        width: 100%;
+    }
+
+}
