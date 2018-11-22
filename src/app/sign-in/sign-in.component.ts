@@ -17,6 +17,10 @@ export class SignInComponent {
   signinForm: FormGroup;
   errorMessage: string;
   loading = false;
+  loginErrorTypes: any = {
+    UNKNOWN_EMAIL: 'unknown_email',
+    INCORRECT_PASSWORD: 'incorrect_password'
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -55,6 +59,21 @@ export class SignInComponent {
 
   displayLoginError(error: Error): void {
     this.errorMessage = this.errorsService.getErrorMessage(error.message);
+    switch(error.message) {
+      case this.loginErrorTypes.UNKNOWN_EMAIL:
+        this.signinForm.controls.email.reset();
+        this.emailField.nativeElement.focus();
+        break;
+      case this.loginErrorTypes.INCORRECT_PASSWORD:
+        this.signinForm.controls.password.reset();
+        this.passwordField.nativeElement.focus();
+        break;
+      default:
+        this.signinForm.controls.email.reset();
+        this.signinForm.controls.password.reset();
+        this.emailField.nativeElement.focus();
+        break;
+    }
   }
 
 }
