@@ -5,6 +5,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 import { AuthService } from './auth.service';
+import { ErrorsService } from './errors.service';
 import { ProjectsService } from './projects.service';
 import { VersionNameType,
         VersionNamesResultType
@@ -15,7 +16,7 @@ import { VersionNameType,
 export class VersionNamesService {
     private versionNames: any = {};
 
-    constructor(private authService: AuthService, private projectsService: ProjectsService, private http: HttpClient) { }
+    constructor(private authService: AuthService, private errorsService: ErrorsService, private projectsService: ProjectsService, private http: HttpClient) { }
 
     fetchVersionNames(projectId: string): Observable<VersionNamesResultType> {
         let versionNamesResult: Observable<any>;
@@ -32,9 +33,7 @@ export class VersionNamesService {
                     this.versionNames[projectId] = response.versionNames;
                     return response;
                 })
-                .catch((err) => {
-                    return Observable.throw(new Error(err.error.message));
-                });
+                .catch((err) => this.errorsService.errorWithAuthStatusCheck(err));
         } else {
             versionNamesResult = Observable.of({code: 'success', versionNames: this.versionNames[projectId]});
         }
@@ -57,9 +56,7 @@ export class VersionNamesService {
                 this.versionNames[projectId].push(response.versionName);
                 return response;
             })
-            .catch((err) => {console.log('### createVersionName error', err);
-                return Observable.throw(new Error(err.error.message));
-            });
+            .catch((err) => this.errorsService.errorWithAuthStatusCheck(err));
         return versionNameResult;
     }
 
@@ -70,9 +67,7 @@ export class VersionNamesService {
         const headers = new HttpHeaders()
             .set('Authorization', 'Bearer ' + this.authService.getUser().token);
         return this.http.delete('api/version-names/' + versionNameId + '?project=' + projectId, {headers: headers})
-            .catch((err) => {
-                return Observable.throw(new Error(err.error.message));
-            });
+            .catch((err) => this.errorsService.errorWithAuthStatusCheck(err));
     }
 
     setVersionNames(versionNames: Array<VersionNameType>): void {

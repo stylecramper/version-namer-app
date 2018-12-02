@@ -5,6 +5,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 import { AuthService } from './auth.service';
+import { ErrorsService } from './errors.service';
 import { ProjectType,
         ProjectsResultType
 } from '../types/project-types';
@@ -13,7 +14,7 @@ import { ProjectType,
 export class ProjectsService implements OnInit {
     private projects: Array<ProjectType> = [];
 
-    constructor(private authService: AuthService, private http: HttpClient) { }
+    constructor(private authService: AuthService, private errorsService: ErrorsService, private http: HttpClient) { }
 
     ngOnInit() {
         this.fetchProjects()
@@ -32,9 +33,7 @@ export class ProjectsService implements OnInit {
             const headers = new HttpHeaders()
                 .set('Authorization', 'Bearer ' + this.authService.getUser().token);
             projectsResult = this.http.get('api/projects', {headers: headers})
-                .catch((err) => {
-                    return Observable.throw(new Error(err.error.message));
-                });
+                .catch((err) => this.errorsService.errorWithAuthStatusCheck(err));
         } else {
             projectsResult = Observable.of({code: 'success', projects: this.projects});
         }
@@ -42,17 +41,13 @@ export class ProjectsService implements OnInit {
     }
 
     createProject(project: object): Observable<any> {
-        let projectResult: Observable<any>;
-
         if (!this.authService.isLoggedIn()) {
             return Observable.throw(new Error('no-login'));
         }
         const headers = new HttpHeaders()
             .set('Authorization', 'Bearer ' + this.authService.getUser().token);
         return this.http.post('api/projects', {project: project}, {headers: headers})
-            .catch((err) => {
-                return Observable.throw(new Error(err.error.message));
-            });
+            .catch((err) => this.errorsService.errorWithAuthStatusCheck(err));
     }
 
     deleteProject(projectId: string): Observable<any> {
@@ -62,9 +57,7 @@ export class ProjectsService implements OnInit {
         const headers = new HttpHeaders()
             .set('Authorization', 'Bearer ' + this.authService.getUser().token);
         const projectDeleteResult: Observable<any> = this.http.delete('api/projects/' + projectId, {headers: headers})
-            .catch((err) => {
-                return Observable.throw(new Error(err.error.message));
-            });
+            .catch((err) => this.errorsService.errorWithAuthStatusCheck(err));
         return projectDeleteResult;
     }
 

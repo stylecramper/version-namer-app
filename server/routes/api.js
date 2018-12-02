@@ -90,7 +90,7 @@ router.post('/login', (req, res) => {
                 PUBLIC
    ----------- ********* ------------ */
 
-   router.get('/animals', (req, res) => {
+router.get('/animals', (req, res) => {
 
     Animal.find({}, function(error, animals) {
         res.set('Content-Type', 'application/json');

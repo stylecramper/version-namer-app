@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Rx';
 
 @Injectable()
 export class ErrorsService {
     private ERROR_MAP: any;
+    private STATUS_UNAUTH = 401;
+    private MESSAGE_UNAUTH = 'session_expired';
 
     constructor() {
         this.ERROR_MAP = {
@@ -20,12 +23,19 @@ export class ErrorsService {
             'cannot_create_version_name':       'An error occurred while saving this version name. Please try again later.',
             'cannot_delete_version_name':       'An error occurred while attempting to delete this version name. Please try again later.',
             'cannot_save_project':              'An error occurred while saving this project. Please try again later.',
-            'generic':                          'Sorry, some random weird thing happened. Please try again later.'
+            'generic':                          'Sorry, some random weird thing happened. Please try again later.',
+            'session_expired':                  'It looks like your session is no longer active. Please log out and back in again.'
         };
     }
 
     getErrorMessage(type: string): string {
         return (this.ERROR_MAP[type]) ? this.ERROR_MAP[type] : this.ERROR_MAP['generic'];
+    }
+
+    errorWithAuthStatusCheck(err): Observable<string> {
+        return (err.status === this.STATUS_UNAUTH)              ?
+            Observable.throw(new Error(this.MESSAGE_UNAUTH))    :
+            Observable.throw(new Error(err.error.message));
     }
 
 }
