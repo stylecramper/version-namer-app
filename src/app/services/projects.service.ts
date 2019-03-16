@@ -50,6 +50,16 @@ export class ProjectsService implements OnInit {
             .catch((err) => this.errorsService.errorWithAuthStatusCheck(err));
     }
 
+    editProjectName(project: ProjectType): Observable<any> {
+        if (!this.authService.isLoggedIn()) {
+            return Observable.throw(new Error('no-login'));
+        }
+        const headers = new HttpHeaders()
+            .set('Authorization', 'Bearer ' + this.authService.getUser().token);
+        return this.http.put('api/projects/' + project.id, {project: project}, {headers: headers})
+            .catch((err) => this.errorsService.errorWithAuthStatusCheck(err));
+    }
+
     deleteProject(projectId: string): Observable<any> {
         if (!this.authService.isLoggedIn()) {
             return Observable.throw(new Error('no-login'));

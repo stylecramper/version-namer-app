@@ -1,6 +1,11 @@
 <div *ngIf="isLoggedIn">
   <section class="projects empty" *ngIf="!hasProjects() && !errorState()">
     <h3>You don't have any projects yet.</h3>
+    <button
+    mat-raised-button
+    color="primary"
+    class="new-project"
+    (click)="createProject()">Create a new project</button>
   </section>
   <div class="alert alert-danger" role="alert" *ngIf="errorMessage">
     {{ errorMessage }}
@@ -17,7 +22,9 @@
       <app-project-item
         [project]="project"
         (openedConfirmDialog)="onOpenConfirmDialog($event)"
-        (edited)="onEditVersionNames($event)"
+        (editedVersionNames)="onEditVersionNames($event)"
+        (renamed)="onRenameProject($event)"
+        (startedEditing)="onStartedEditing(project)"
         *ngFor="let project of projects">
       </app-project-item>
     </ul>

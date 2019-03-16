@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogConfig, MatSnackBar } from '@angular/material';
 
@@ -15,8 +15,10 @@ import { ConfirmDialogComponent } from './../common/confirm-dialog/confirm-dialo
   styleUrls: ['./projects.component.css']
 })
 export class ProjectsComponent implements OnInit {
+  @ViewChildren(ProjectItemComponent) projectItems: QueryList<ProjectItemComponent>;
   private isLoggedIn: boolean;
   private projects: Array<ProjectType> = [];
+  private projectToEdit: ProjectType;
   private projectsFetched = false;
   private loading;
   private errorMessage = '';
@@ -74,6 +76,33 @@ export class ProjectsComponent implements OnInit {
           this.loading = false;
           this.errorMessage = this.errorsService.getErrorMessage(err.message);
         });
+  }
+
+  onStartedEditing(project: ProjectType): void {
+    this.projectToEdit = Object.assign({}, project);
+  }
+
+  onRenameProject(project: ProjectType): void {console.log('onRenameProject project', project);
+    this.loading = true;
+    this.projectToEdit = project;
+    this.projectsService.editProjectName(project)
+        .subscribe((data) => {console.log('onRenameProject response', data);
+          this.loading = false;
+          this.projectItems.forEach(projectItem => projectItem.setEditMode(false));
+        }, (err) => {console.log('onRenameProject err', err);
+          this.loading = false;
+          this.errorMessage = this.errorsService.getErrorMessage(err.message);
+          this.resetProjects();
+        });
+  }
+
+  resetProjects(): void {
+    this.projects = this.projects.map((project) => {
+      if (project.id === this.projectToEdit.id) {
+        project.name = this.projectToEdit.name;
+      }
+      return project;
+    });
   }
 
   onEditVersionNames(project: ProjectType): void {

@@ -73,6 +73,36 @@ const createProject = (req, res) => {
         });
 };
 
+const renameProject = (req, res) => {
+    console.log('RENAME project', req.body.project);
+    Project.findById(req.params.id, 'project_name').exec((err, projectfound) => {
+        let error;
+        if (err) {console.log('#### err', err.name + ', ' + err.kind);
+            if (err.name === 'CastError' && err.kind === 'ObjectId') {
+                error = { code: 'error', message: 'project_not_found' };
+            } else {
+                error = { code: 'error', message: 'generic_error' };
+            }
+            res
+                .status(500)
+                .json(error);
+            return;
+        }
+        projectfound.project_name = req.body.project.name;
+        projectfound.save((err) => {
+            if (err) {
+                res
+                    .status(500)
+                    .json({ code: 'error', message: 'cannot_rename_project' });
+                return;
+            }
+            res
+                .status(201)
+                .json({ code: 'success', project: { id: projectfound._id, name: projectfound.project_name } });
+        });
+    });
+};
+
 const deleteProject = (req, res) => {
     console.log('DELETE project', req.params.id);
     let promises = [];
@@ -135,5 +165,6 @@ function reflect(promise){
 module.exports = {
     getProjects: getProjects,
     createProject: createProject,
+    renameProject: renameProject,
     deleteProject: deleteProject
 };

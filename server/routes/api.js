@@ -53,6 +53,10 @@ router.post('/projects', jwtCheck, (req, res) => {
     projectsController.createProject(req, res);
 });
 
+router.put('/projects/:id', jwtCheck, (req, res) => {
+    projectsController.renameProject(req, res);
+});
+
 router.delete('/projects/:id', jwtCheck, (req, res) => {
     projectsController.deleteProject(req, res);
 });

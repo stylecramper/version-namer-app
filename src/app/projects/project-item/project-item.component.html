@@ -1,5 +1,23 @@
-<li>
-    <span class="project-name">{{ project.name }} <i class="edit-icon far fa-edit"></i></span> 
+<li [ngClass]="{ 'editing': editMode }">
+    <span
+        *ngIf="!editMode"    
+        class="project-name"
+        (click)="setEditMode(true, project)"
+        title="Edit project name">{{ project.name }} <i class="edit-icon far fa-edit"></i>
+    </span>
+    <input
+        autofocus    
+        *ngIf="editMode"
+        class="edit-input"
+        (keyup)="onKey($event, project)"
+        type="text"
+        [(ngModel)]="project.name">
+    <button
+        *ngIf="editMode"
+        class="edit-check"
+        (click)="editProjectName(project)">
+        <i class="check-icon far fa-check-square"></i>
+    </button>
     <div>
         <button
         mat-raised-button

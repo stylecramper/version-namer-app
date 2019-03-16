@@ -28,6 +28,26 @@ li > span:hover .edit-icon {
     color: green;
 }
 
+li .edit-input {
+    background-color: #c5e3fc;
+    line-height: 1;
+    width: 50%;
+}
+
+li .edit-check {
+    -webkit-appearance: none;
+    background-color: transparent;
+    border-style: none;
+}
+
+li .check-icon {
+    color: #0059a9;
+    cursor: pointer;
+    font-size: 2em;
+    position: relative;
+    top: 6px;
+}
+
 .delete-project {
     margin-left: 0.5em;
 }
