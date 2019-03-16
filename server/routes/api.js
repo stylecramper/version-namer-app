@@ -29,10 +29,9 @@ const userController = require('./modules/user/user.controller');
 const projectsController = require('./modules/project/project.controller');
 
 const versionNameController = require('./modules/version-name/version-name.controller');
+mongoose.connect(process.env.MONGOLAB_URI);
 
-mongoose.connect('mongodb://localhost/VERSION_NAMES');
-
-mongodb.MongoClient.connect('mongodb://localhost:27017/VERSION_NAMES', function(error, database) {
+mongodb.MongoClient.connect(process.env.MONGOLAB_URI, function(error, database) {
     if (error) {
         console.log('error:', error);
         process.exit(1);
