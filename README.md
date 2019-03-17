@@ -22,3 +22,5 @@ In the root folder, enter `npm run build` to bundle and build the project.
 
 In the root folder, enter `npm run serve` in the terminal to start the server. You can now point your browser to [http://localhost:3000/](http://localhost:3000/) to register, sign in, and start creating projects.
 
+## Demo here:
+[https://version-namer-app.herokuapp.com/home](https://version-namer-app.herokuapp.com/home)
