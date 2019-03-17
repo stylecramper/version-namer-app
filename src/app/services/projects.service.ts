@@ -74,6 +74,9 @@ export class ProjectsService implements OnInit {
     setProjects(projects: Array<ProjectType>): void {
         this.projects = projects;
     }
+    resetProjects(): void {
+        this.setProjects([]);
+    }
 
     getProjects(): Array<ProjectType> {
         return this.projects;

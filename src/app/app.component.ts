@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 
 import { AuthService } from './services/auth.service';
+import { ProjectsService } from './services/projects.service';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +14,7 @@ import { AuthService } from './services/auth.service';
 export class AppComponent {
   title = 'Version Name Generator';
 
-  constructor(private router: Router, private authService: AuthService) { }
+  constructor(private router: Router, private authService: AuthService, private projectsService: ProjectsService) { }
 
   loggedIn(): boolean {
     return this.authService.isLoggedIn();
@@ -21,6 +22,7 @@ export class AppComponent {
 
   logout(): void {
     this.authService.unsetUser();
+    this.projectsService.resetProjects();
     this.router.navigate(['/home', { outlets: { signin: null }}]);
   }
 }
