@@ -1,3 +1,4 @@
+const sanitizeHtml = require('sanitize-html');
 const Project = require('../project/project.model').Project;
 const ProjectVersionName = require('./version-name.model').ProjectVersionName;
 
@@ -32,9 +33,23 @@ const getVersionNames = (req, res) => {
 };
 
 const createVersionName = (req, res) => {
+    const cleanAdjective = sanitizeHtml(req.body.versionName.adjective._adjective, {
+        allowedTags: [],
+        allowedAttributes: {}
+    });
+    const cleanAnimal = sanitizeHtml(req.body.versionName.animal._animal, {
+        allowedTags: [],
+        allowedAttributes: {}
+    });
+    if (cleanAdjective === '' || cleanAnimal === '') {
+        res
+            .status(500)
+            .json({ code: 'error', message: 'cannot_create_version_name' });
+        return;
+    }
     const projectVersionName = {
-        adjective: req.body.versionName.adjective._adjective,
-        animal: req.body.versionName.animal._animal,
+        adjective: cleanAdjective,
+        animal: cleanAnimal,
         created_at: new Date(),
         updated_at: new Date()
     };
