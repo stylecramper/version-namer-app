@@ -1,3 +1,4 @@
+const sanitizeHtml = require('sanitize-html');
 const Project = require('./project.model').Project;
 const User = require('../user/user.model').User;
 const ProjectVersionName = require('../version-name/version-name.model').ProjectVersionName;
@@ -37,8 +38,18 @@ const getProjects = (req, res) => {
 };
 
 const createProject = (req, res) => {
+    const cleanProjectName = sanitizeHtml(req.body.project.projectname, {
+        allowedTags: [],
+        allowedAttributes: {}
+    });
+    if (cleanProjectName === '') {
+        res
+            .status(500)
+            .json({ code: 'error', message: 'cannot_create_project' });
+        return;
+    }
     const project = {
-        project_name: req.body.project.projectname,
+        project_name: cleanProjectName,
         project_version_names: [],
         current_project_version_name: null,
         created_at: new Date(),
@@ -75,6 +86,16 @@ const createProject = (req, res) => {
 
 const renameProject = (req, res) => {
     console.log('RENAME project', req.body.project);
+    const cleanProjectName = sanitizeHtml(req.body.project.name, {
+        allowedTags: [],
+        allowedAttributes: {}
+    });
+    if (cleanProjectName === '') {
+        res
+            .status(500)
+            .json({ code: 'error', message: 'cannot_rename_project' });
+        return;
+    }
     Project.findById(req.params.id, 'project_name').exec((err, projectfound) => {
         let error;
         if (err) {console.log('#### err', err.name + ', ' + err.kind);
@@ -88,7 +109,7 @@ const renameProject = (req, res) => {
                 .json(error);
             return;
         }
-        projectfound.project_name = req.body.project.name;
+        projectfound.project_name = cleanProjectName;
         projectfound.save((err) => {
             if (err) {
                 res
