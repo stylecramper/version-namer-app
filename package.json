@@ -27,7 +27,7 @@
     "body-parser": "^1.17.1",
     "core-js": "^2.5.4",
     "event-stream": "^4.0.1",
-    "express": "^4.15.2",
+    "express": "^4.17.3",
     "mongoose": "^5.13.15",
     "rxjs": "^6.0.0",
     "rxjs-compat": "^6.2.0",
